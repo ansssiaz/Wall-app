@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Android School</string>
     <string name="hello_eltex">Hello Eltex!</string>
-    <string name="sharing_text">Button for sharing</string>
+    <string name="sharing_text" translatable="false">Button for sharing</string>
 </resources>
