@@ -8,24 +8,25 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:paddingStart="16dp"
         android:paddingTop="12dp"
         android:paddingEnd="0dp"
-        android:paddingBottom="12dp"
+        android:paddingBottom="16dp"
         tools:context=".MainActivity">
 
         <ImageView
             android:id="@+id/avatar"
             android:layout_width="@dimen/avatar_size"
             android:layout_height="@dimen/avatar_size"
+            android:contentDescription="@string/avatar"
             android:src="@drawable/avatar_background"
-            app:layout_constraintBottom_toBottomOf="@id/date_of_post"
+            app:layout_constraintBottom_toBottomOf="@id/published"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/author"
-            tools:ignore="ContentDescription" />
+            app:layout_constraintTop_toTopOf="@id/author" />
 
         <TextView
+            android:id="@+id/avatar_initials"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="?colorOnPrimary"
@@ -44,24 +45,30 @@
             android:maxLines="1"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/date_of_post"
+            app:layout_constraintBottom_toTopOf="@id/authorOffset"
             app:layout_constraintEnd_toStartOf="@id/menu"
             app:layout_constraintStart_toEndOf="@id/avatar"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Lydia Westerwelt" />
 
+        <Space
+            android:id="@+id/authorOffset"
+            android:layout_width="wrap_content"
+            android:layout_height="4dp"
+            app:layout_constraintBottom_toTopOf="@id/published"
+            app:layout_constraintStart_toEndOf="@id/avatar"
+            app:layout_constraintTop_toBottomOf="@id/author" />
+
         <TextView
-            android:id="@+id/date_of_post"
-            android:layout_width="0dp"
+            android:id="@+id/published"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:textSize="14sp"
-            app:layout_constraintEnd_toStartOf="@id/menu"
             app:layout_constraintStart_toEndOf="@id/avatar"
-            app:layout_constraintTop_toBottomOf="@id/author"
+            app:layout_constraintTop_toBottomOf="@id/authorOffset"
             tools:text="11.05.22 11:21" />
 
         <ImageView
@@ -69,62 +76,32 @@
             android:layout_width="@dimen/icon_menu_size"
             android:layout_height="@dimen/icon_menu_size"
             android:layout_marginEnd="4dp"
+            android:contentDescription="@string/menu_content_description"
             android:src="@drawable/icon_menu_button"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="ContentDescription" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/status"
-            android:layout_width="0dp"
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/headerBarrier"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@id/menu"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/date_of_post"
-            tools:text="Offline" />
-
-        <TextView
-            android:id="@+id/date_of_event"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toStartOf="@id/menu"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/status"
-            tools:text="16.05.22 12:00" />
+            app:barrierDirection="bottom"
+            app:barrierMargin="12dp"
+            app:constraint_referenced_ids="published,menu,avatar" />
 
         <TextView
             android:id="@+id/content"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:letterSpacing="0.02"
             android:textColor="?colorOnSurfaceVariant"
-            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/date_of_event"
-            tools:text="Приглашаю провести уютный вечер за увлекательными играми! У нас есть несколько вариантов настолок, подходящих для любой компании."
-            tools:ignore="VisualLintLongText" />
-
-        <TextView
-            android:id="@+id/link"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:textColor="?colorPrimary"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toStartOf="@id/menu"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/content"
-            tools:text="https://m2.material.io/components/cards" />
+            app:layout_constraintTop_toBottomOf="@id/headerBarrier"
+            tools:ignore="VisualLintLongText"
+            tools:text="Слушайте, а как вы относитесь к тому, чтобы собраться большой компанией и поиграть в настолки? У меня есть несколько клевых игр, можем устроить вечер настолок! Пишите в лс или звоните" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/like"
@@ -132,10 +109,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            android:contentDescription="@string/like_content_description"
             app:icon="@drawable/liked_icon"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/link"
-            tools:text="3" />
+            app:layout_constraintTop_toBottomOf="@id/content" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/share"
@@ -143,23 +119,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:contentDescription="@string/sharing_text"
+            android:contentDescription="@string/share_content_description"
             app:icon="@drawable/baseline_share_24"
             app:layout_constraintStart_toEndOf="@id/like"
-            app:layout_constraintTop_toBottomOf="@id/link"
-            tools:ignore="RedundantDescriptionCheck,RedundantDescriptionCheck" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/people"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="22dp"
-            app:icon="@drawable/people_outline"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/link"
-            tools:text="2" />
-
+            app:layout_constraintTop_toBottomOf="@id/content" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
