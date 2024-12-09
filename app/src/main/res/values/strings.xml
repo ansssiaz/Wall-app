@@ -2,9 +2,11 @@
     <string name="app_name">Android School</string>
     <string name="hello_eltex">Hello Eltex!</string>
     <string name="share_content_description">Share</string>
-    <string name="join_content_description">Join</string>
+    <string name="participate_content_description">Join</string>
     <string name="like_content_description">Like</string>
     <string name="menu_content_description">Menu</string>
     <string name="not_implemented">Not implemented</string>
     <string name="avatar">Avatar</string>
+    <string name="offline" translatable="false">Offline</string>
+    <string name="online" translatable="false">Online</string>
 </resources>
