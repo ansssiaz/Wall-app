@@ -2,10 +2,10 @@ package com.eltex.androidschool
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.eltex.androidschool.databinding.ActivityMainBinding
 import com.eltex.androidschool.model.Post
+import com.eltex.androidschool.utils.toast
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,10 +24,10 @@ class MainActivity : AppCompatActivity() {
             bindPost(binding, post)
         }
         binding.share.setOnClickListener {
-            Toast.makeText(this, R.string.not_implemented, Toast.LENGTH_SHORT).show()
+            toast(R.string.not_implemented, true)
         }
         binding.menu.setOnClickListener {
-            Toast.makeText(this, R.string.not_implemented, Toast.LENGTH_SHORT).show()
+            toast(R.string.not_implemented, true)
         }
     }
 
