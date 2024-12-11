@@ -9,4 +9,6 @@
     <string name="avatar">Avatar</string>
     <string name="offline" translatable="false">Offline</string>
     <string name="online" translatable="false">Online</string>
+    <string name="date_today">Today</string>
+    <string name="date_yesterday">Yesterday</string>
 </resources>

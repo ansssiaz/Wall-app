@@ -6,21 +6,56 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.format.DateTimeFormatter
 
 class InMemoryEventRepository : EventRepository {
+    private val startDate = LocalDateTime.now()
+    private val formatter = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm")
     private val state = MutableStateFlow(
-        List(100) {
+        listOf(
             Event(
-                id = it.toLong() + 1L,
+                id = 1L,
                 authorId = 1L,
-                author = "Lydia Westervelt",
-                published = "11.05.22 11:21",
+                author = "Author 1",
+                published = startDate.format(formatter),
                 type = Type.OFFLINE,
-                datetime = "16.05.22 12:00",
-                content = "№$it Приглашаю провести уютный вечер за увлекательными играми! У нас есть несколько вариантов настолок, подходящих для любой компании.",
-                link = "https://m2.material.io/components/cards",
+                datetime = startDate.format(formatter),
+                content = "№1. Приглашаю провести уютный вечер за увлекательными играми! У нас есть несколько вариантов настолок, подходящих для любой компании.",
+                link = "https://m2.material.io/components/cards"
+            ),
+            Event(
+                id = 2L,
+                authorId = 2L,
+                author = "Author 2",
+                published = startDate.format(formatter),
+                type = Type.OFFLINE,
+                datetime = startDate.format(formatter),
+                content = "№2. Приглашаю провести уютный вечер за увлекательными играми! У нас есть несколько вариантов настолок, подходящих для любой компании.",
+                link = "https://m2.material.io/components/cards"
+            ),
+
+            Event(
+                id = 3L,
+                authorId = 3L,
+                author = "Author 3",
+                published = startDate.minusDays(1).format(formatter),
+                type = Type.OFFLINE,
+                datetime = startDate.minusDays(1).format(formatter),
+                content = "№3. Приглашаю провести уютный вечер за увлекательными играми! У нас есть несколько вариантов настолок, подходящих для любой компании.",
+                link = "https://m2.material.io/components/cards"
+            ),
+            Event(
+                id = 4L,
+                authorId = 4L,
+                author = "Author 4",
+                published = startDate.minusDays(2).format(formatter),
+                type = Type.OFFLINE,
+                datetime = startDate.minusDays(2).format(formatter),
+                content = "№4. Приглашаю провести уютный вечер за увлекательными играми! У нас есть несколько вариантов настолок, подходящих для любой компании.",
+                link = "https://m2.material.io/components/cards"
             )
-        }
+        )
     )
 
     override fun getEvents(): Flow<List<Event>> = state.asStateFlow()
