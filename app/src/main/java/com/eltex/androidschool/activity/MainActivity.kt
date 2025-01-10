@@ -35,12 +35,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        /* val adapter = EventsAdapter(likeClickListener = {
-             viewModel.likeById(it.id)
-         }, participateClickListener =
-         {
-             viewModel.participate(it.id)
-         })*/
+        val newEventContract =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                val content = result.data?.getStringExtra(Intent.EXTRA_TEXT)
+                val eventId = result.data?.getLongExtra("EXTRA_EVENT_ID", -1L)
+                if (eventId != null && eventId != -1L && content != null) {
+                    viewModel.editById(eventId, content)
+                } else if (content != null) {
+                    viewModel.addEvent(content)
+                }
+            }
 
         val adapter = EventsAdapter(
             object : EventsAdapter.EventListener {
@@ -55,7 +59,7 @@ class MainActivity : AppCompatActivity() {
                 override fun onShareClicked(event: Event) {
                     val intent = Intent()
                         .setAction(Intent.ACTION_SEND)
-                        .putExtra(Intent.EXTRA_TEXT, event.content)
+                        .putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text, event.author, event.content))
                         .setType("text/plain")
                     val chooser = Intent.createChooser(intent, null)
                     startActivity(chooser)
@@ -64,30 +68,20 @@ class MainActivity : AppCompatActivity() {
                 override fun onDeleteClicked(event: Event) {
                     viewModel.deleteById(event.id)
                 }
-            }
-        )
-        val newEventContract =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                val content = it.data?.getStringExtra(Intent.EXTRA_TEXT)
-                if (content != null) {
-                    viewModel.addEvent(content)
+
+                override fun onEditClicked(event: Event) {
+                    val intent = Intent(this@MainActivity, NewEventActivity::class.java).apply {
+                        putExtra("EXTRA_EVENT_ID", event.id)
+                        putExtra(Intent.EXTRA_TEXT, event.content)
+                    }
+                    newEventContract.launch(intent)
                 }
             }
+        )
+
         binding.addEvent.setOnClickListener {
             newEventContract.launch(Intent(this, NewEventActivity::class.java))
         }
-
-/*        binding.root.adapter = adapter
-        binding.root.addItemDecoration(
-            OffsetDecoration(resources.getDimensionPixelSize(R.dimen.small_spacing))
-        )
-
-        binding.root.addItemDecoration(
-            DateDecoration(
-                getEvent = { viewModel.uiState.value.events[it] },
-                context = this
-            )
-        )*/
 
         binding.list.adapter = adapter
         binding.list.addItemDecoration(
@@ -95,7 +89,6 @@ class MainActivity : AppCompatActivity() {
         )
         binding.list.addItemDecoration(
             DateDecoration(
-                //getEvent = { viewModel.uiState.value.events[it] },
                 getEvent = { position ->
                     if (position in 0 until viewModel.uiState.value.events.size) {
                         viewModel.uiState.value.events[position]

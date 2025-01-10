@@ -13,9 +13,11 @@
     <string name="date_yesterday">Yesterday</string>
     <string name="save">Save event</string>
     <string name="new_event_title">New event</string>
+    <string name="edit_event_title">Edit event</string>
     <string name="content_hint">Content</string>
     <string name="empty_event_error">Text cannot be blank</string>
     <string name="add_event_description">Add event</string>
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
+    <string name="share_text">Author: %s, content: %s</string>
 </resources>

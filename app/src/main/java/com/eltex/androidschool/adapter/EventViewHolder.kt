@@ -27,6 +27,7 @@ class EventViewHolder(
         binding.published.text = event.published
         binding.datetime.text = event.datetime
         binding.avatarInitials.text = event.author.take(1)
+        binding.link.text = event.link
         binding.type.setText(
             when (event.type) {
                 Type.OFFLINE -> R.string.offline

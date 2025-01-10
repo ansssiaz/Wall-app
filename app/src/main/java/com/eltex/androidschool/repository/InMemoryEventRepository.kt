@@ -89,14 +89,35 @@ class InMemoryEventRepository : EventRepository {
     override fun addEvent(content: String) {
         state.update { events ->
             buildList(capacity = events.size + 1) {
-                add(Event(id = ++nextId, content = content, author = "Student", published = startDate.format(formatter)))
+                add(
+                    Event(
+                        id = ++nextId,
+                        content = content,
+                        author = "Student",
+                        published = startDate.format(formatter),
+                        datetime = startDate.format(formatter)
+                    )
+                )
                 addAll(events)
             }
         }
     }
+
     override fun deleteById(id: Long) {
         state.update { events ->
             events.filter { it.id != id }
+        }
+    }
+
+    override fun editById(id: Long, content: String) {
+        state.update { eventList ->
+            eventList.map { event ->
+                if (event.id == id) {
+                    event.copy(content = content)
+                } else {
+                    event
+                }
+            }
         }
     }
 }
