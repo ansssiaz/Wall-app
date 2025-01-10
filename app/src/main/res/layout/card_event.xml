@@ -13,7 +13,7 @@
         android:paddingTop="12dp"
         android:paddingEnd="0dp"
         android:paddingBottom="12dp"
-        tools:context=".MainActivity">
+        tools:context=".activity.MainActivity">
 
         <ImageView
             android:id="@+id/avatar"

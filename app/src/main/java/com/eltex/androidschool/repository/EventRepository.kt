@@ -7,4 +7,6 @@ interface EventRepository {
     fun getEvents(): Flow<List<Event>>
     fun like(id : Long)
     fun participate(id : Long)
+    fun addEvent(content: String)
+    fun deleteById(id: Long)
 }

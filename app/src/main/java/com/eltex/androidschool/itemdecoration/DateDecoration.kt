@@ -1,5 +1,6 @@
 package com.eltex.androidschool.itemdecoration
 
+import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -7,13 +8,29 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import com.eltex.androidschool.R
 import com.eltex.androidschool.model.Event
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
 
 class DateDecoration(
-    private val eventsList: List<Event>,
+    val getEvent: (adapterPosition: Int) -> Event?,
+    private val context: Context,
 ) : ItemDecoration() {
+    private val topOffset = context.resources.getDimensionPixelSize(R.dimen.date_decoration_top_offset)
+    private val dateDecorationTextSize = context.resources.getDimension(R.dimen.date_decoration_text_size)
+    private val textMargin = context.resources.getDimensionPixelSize(R.dimen.date_decoration_text_margin)
+    private val textVerticalOffset = context.resources.getDimensionPixelSize(R.dimen.date_decoration_text_vertical_offset)
+
+    private val paint = Paint().apply {
+        color = Color.GRAY
+        textSize = dateDecorationTextSize
+    }
+
+    private val dateFormat = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm")
+    private val today = dateFormat.format(LocalDateTime.now())
+    private val yesterday = LocalDateTime.now().minusDays(1).format(dateFormat)
+
     override fun getItemOffsets(
         outRect: Rect,
         view: View,
@@ -22,7 +39,7 @@ class DateDecoration(
     ) {
         val position = parent.getChildAdapterPosition(view)
         if (position == 0 || isDateChanged(position)) {
-            outRect.top = 50
+            outRect.top = topOffset
         } else {
             outRect.top = 0
         }
@@ -33,8 +50,8 @@ class DateDecoration(
      * @param position - индекс проверяемого поста
      */
     private fun isDateChanged(position: Int): Boolean {
-        val currentPostDate = eventsList[position].published
-        val previousPostDate = eventsList[position - 1].published
+        val currentPostDate = getEvent(position)?.published
+        val previousPostDate = getEvent(position - 1)?.published
 
         return !isSameDate(currentPostDate, previousPostDate)
     }
@@ -44,7 +61,8 @@ class DateDecoration(
      * @param date1 - первая дата
      * @param date2 - вторая дата
      */
-    private fun isSameDate(date1: String, date2: String): Boolean {
+    private fun isSameDate(date1: String?, date2: String?): Boolean {
+        if (date1 == null || date2 == null) return false
         val format = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm")
         val cal1 = LocalDateTime.parse(date1, format)
         val cal2 = LocalDateTime.parse(date2, format)
@@ -59,31 +77,27 @@ class DateDecoration(
      * @param state - объект, который содержит информацию о текущем состоянии RecyclerView
      */
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-        val dateFormat = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm")
-        val today = dateFormat.format(LocalDateTime.now())
-        val yesterday = LocalDateTime.now().minusDays(1).format(dateFormat)
-
         for (i in 0 until parent.childCount) {
             val child = parent.getChildAt(i)
             val position = parent.getChildAdapterPosition(child)
-
-            if (position == 0 || isDateChanged(position)) {
-                val date = eventsList[position].published
-                val label = when {
-                    isSameDate(date, today) -> "Сегодня"
-                    isSameDate(date, yesterday) -> "Вчера"
-                    else -> date.substringBefore(" ")
+            val event = getEvent(position) // Получаем событие по позиции
+            if (event != null) {
+                if (position == 0 || isDateChanged(position)) {
+                    val date = getEvent(position)?.published
+                    val label = when {
+                        isSameDate(date, today) -> context.getString(R.string.date_today)
+                        isSameDate(date, yesterday) -> context.getString(R.string.date_yesterday)
+                        else -> date?.substringBefore(" ")
+                    }
+                    if (label != null) {
+                        c.drawText(
+                            label,
+                            textMargin.toFloat(),
+                            child.top - textVerticalOffset.toFloat(),
+                            paint
+                        )
+                    }
                 }
-
-                val paint = Paint().apply {
-                    color = Color.GRAY
-                    textSize = 40f
-                }
-
-                val x = child.left + 16
-                val y = child.top - 20
-
-                c.drawText(label, x.toFloat(), y.toFloat(), paint)
             }
         }
     }

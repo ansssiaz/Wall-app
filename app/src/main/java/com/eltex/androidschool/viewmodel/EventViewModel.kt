@@ -38,4 +38,12 @@ data class EventViewModel(private val repository: EventRepository) : ViewModel()
     fun getEventsList():List<Event> {
         return repository.getEvents().stateIn(viewModelScope, SharingStarted.Eagerly, emptyList()).value
     }
+
+    fun addEvent (content: String){
+        repository.addEvent(content)
+    }
+
+    fun deleteById (id: Long){
+        repository.deleteById(id)
+    }
 }
