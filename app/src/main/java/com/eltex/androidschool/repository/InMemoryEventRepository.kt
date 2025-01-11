@@ -18,7 +18,7 @@ class InMemoryEventRepository : EventRepository {
                 id = 1L,
                 authorId = 1L,
                 author = "Author 1",
-                published = startDate.format(formatter),
+                published = startDate.minusDays(2).format(formatter),
                 type = Type.OFFLINE,
                 datetime = startDate.format(formatter),
                 content = "№1. Приглашаю провести уютный вечер за увлекательными играми! У нас есть несколько вариантов настолок, подходящих для любой компании.",
@@ -28,7 +28,7 @@ class InMemoryEventRepository : EventRepository {
                 id = 2L,
                 authorId = 2L,
                 author = "Author 2",
-                published = startDate.format(formatter),
+                published = startDate.minusDays(1).format(formatter),
                 type = Type.OFFLINE,
                 datetime = startDate.format(formatter),
                 content = "№2. Приглашаю провести уютный вечер за увлекательными играми! У нас есть несколько вариантов настолок, подходящих для любой компании.",
@@ -39,7 +39,7 @@ class InMemoryEventRepository : EventRepository {
                 id = 3L,
                 authorId = 3L,
                 author = "Author 3",
-                published = startDate.minusDays(1).format(formatter),
+                published = startDate.format(formatter),
                 type = Type.OFFLINE,
                 datetime = startDate.minusDays(1).format(formatter),
                 content = "№3. Приглашаю провести уютный вечер за увлекательными играми! У нас есть несколько вариантов настолок, подходящих для любой компании.",
@@ -49,16 +49,17 @@ class InMemoryEventRepository : EventRepository {
                 id = 4L,
                 authorId = 4L,
                 author = "Author 4",
-                published = startDate.minusDays(2).format(formatter),
+                published = startDate.format(formatter),
                 type = Type.OFFLINE,
                 datetime = startDate.minusDays(2).format(formatter),
                 content = "№4. Приглашаю провести уютный вечер за увлекательными играми! У нас есть несколько вариантов настолок, подходящих для любой компании.",
                 link = "https://m2.material.io/components/cards"
             )
         )
+            .reversed()
     )
 
-    private var nextId = state.value.last().id
+    private var nextId = state.value.first().id
 
     override fun getEvents(): Flow<List<Event>> = state.asStateFlow()
 
