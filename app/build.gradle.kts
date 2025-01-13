@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    kotlin("plugin.serialization") version "1.9.21"
 }
 
 android {
@@ -52,4 +53,5 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.activity.ktx)
     implementation(libs.threetenabp)
+    implementation(libs.kotlinx.serialization.json)
 }

@@ -1,7 +1,9 @@
 package com.eltex.androidschool.model
 
+import kotlinx.serialization.Serializable
 import java.util.Collections.emptyList
 
+@Serializable
 data class Event(
     val id: Long = 0L,
     val authorId: Long = 0L,
