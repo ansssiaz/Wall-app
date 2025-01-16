@@ -15,7 +15,7 @@ class NewEventActivity : AppCompatActivity() {
         val binding = ActivityNewEventBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        eventId = intent.getLongExtra("EXTRA_EVENT_ID", -1L)
+        eventId = intent.getLongExtra(Constants.EXTRA_EVENT_ID, -1L)
         val initialContent = intent.getStringExtra(Intent.EXTRA_TEXT) ?: ""
         binding.content.setText(initialContent)
 
@@ -30,7 +30,7 @@ class NewEventActivity : AppCompatActivity() {
             } else {
                 val resultIntent = Intent().putExtra(Intent.EXTRA_TEXT, content)
                 if (eventId != null) {
-                    resultIntent.putExtra("EXTRA_EVENT_ID", eventId)
+                    resultIntent.putExtra(Constants.EXTRA_EVENT_ID, eventId)
                 }
                 setResult(RESULT_OK, resultIntent)
                 finish()

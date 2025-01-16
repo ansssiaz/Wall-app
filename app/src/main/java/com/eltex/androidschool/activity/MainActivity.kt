@@ -22,6 +22,10 @@ import com.eltex.androidschool.model.Event
 import com.eltex.androidschool.repository.SQLiteEventRepository
 import com.jakewharton.threetenabp.AndroidThreeTen
 
+object Constants {
+    const val EXTRA_EVENT_ID = "EXTRA_EVENT_ID"
+}
+
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         val newEventContract =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 val content = result.data?.getStringExtra(Intent.EXTRA_TEXT)
-                val eventId = result.data?.getLongExtra("EXTRA_EVENT_ID", -1L)
+                val eventId = result.data?.getLongExtra(Constants.EXTRA_EVENT_ID, -1L)
                 if (eventId != null && eventId != -1L && content != null) {
                     viewModel.editById(eventId, content)
                 } else if (content != null) {
@@ -83,7 +87,7 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onEditClicked(event: Event) {
                     val intent = Intent(this@MainActivity, NewEventActivity::class.java).apply {
-                        putExtra("EXTRA_EVENT_ID", event.id)
+                        putExtra(Constants.EXTRA_EVENT_ID, event.id)
                         putExtra(Intent.EXTRA_TEXT, event.content)
                     }
                     newEventContract.launch(intent)
