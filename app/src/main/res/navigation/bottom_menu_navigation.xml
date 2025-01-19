@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_menu_navigation"
+    app:startDestination="@id/postsFragment">
+
+    <fragment
+        android:id="@+id/postsFragment"
+        android:name="com.eltex.androidschool.fragment.PostsFragment"
+        android:label="fragment_posts" />
+
+    <fragment
+        android:id="@+id/eventsFragment"
+        android:name="com.eltex.androidschool.fragment.EventsFragment"
+        android:label="fragment_events"
+        tools:layout="@layout/fragment_events">
+    <action
+        android:id="@+id/action_eventsFragment_to_newEventFragment"
+        app:destination="@id/newEventFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/usersFragment"
+        android:name="com.eltex.androidschool.fragment.UsersFragment"
+        android:label="fragment_users" />
+
+    <fragment
+        android:id="@+id/newEventFragment"
+        android:name="com.eltex.androidschool.fragment.NewEventFragment"
+        tools:layout="@layout/fragment_new_event" />
+</navigation>

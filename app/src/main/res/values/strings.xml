@@ -20,4 +20,7 @@
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
     <string name="share_text">Author: %s, content: %s</string>
+    <string name="events_menu">Events</string>
+    <string name="users_menu">Users</string>
+    <string name="posts_menu">Posts</string>
 </resources>

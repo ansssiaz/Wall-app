@@ -19,4 +19,7 @@
     <string name="delete">Удалить</string>
     <string name="edit">Редактировать</string>
     <string name="share_text">Автор: %s, контент: %s</string>
+    <string name="events_menu">События</string>
+    <string name="users_menu">Пользователи</string>
+    <string name="posts_menu">Посты</string>
 </resources>
