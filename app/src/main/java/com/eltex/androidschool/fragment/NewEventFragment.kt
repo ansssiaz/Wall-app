@@ -6,16 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.fragment.findNavController
 import com.eltex.androidschool.R
 import com.eltex.androidschool.databinding.FragmentNewEventBinding
-import com.eltex.androidschool.db.AppDb
-import com.eltex.androidschool.repository.SQLiteEventRepository
+import com.eltex.androidschool.repository.NetworkEventRepository
+import com.eltex.androidschool.utils.getErrorText
 import com.eltex.androidschool.viewmodel.NewEventViewModel
 import com.eltex.androidschool.viewmodel.ToolbarViewModel
 import kotlinx.coroutines.flow.filter
@@ -27,6 +29,7 @@ class NewEventFragment : Fragment() {
     companion object {
         const val ARG_EVENT_ID = "ARG_EVENT_ID"
         const val ARG_CONTENT = "ARG_CONTENT"
+        const val POST_CREATED_RESULT = "POST_CREATED_RESULT"
     }
 
     private val toolbarViewModel by activityViewModels<ToolbarViewModel>()
@@ -64,10 +67,8 @@ class NewEventFragment : Fragment() {
             viewModelFactory {
                 initializer {
                     NewEventViewModel(
-                        repository = SQLiteEventRepository(
-                            AppDb.getInstance(requireContext().applicationContext).eventDao
-                        ),
-                        eventId = id,
+                        repository = NetworkEventRepository(),
+                        id = id,
                     )
                 }
             }
@@ -83,16 +84,29 @@ class NewEventFragment : Fragment() {
                     Toast.makeText(requireContext(), R.string.empty_event_error, Toast.LENGTH_SHORT)
                         .show()
                 } else {
-                    if (id != 0L) {
-                        viewModel.editEvent(content)
-                    } else {
-                        viewModel.addEvent(content)
-                    }
-                    findNavController().navigateUp()
+                    viewModel.addEvent(content)
                 }
                 toolbarViewModel.saveClicked(false)
             }
             .launchIn(viewLifecycleOwner.lifecycleScope)
+
+        viewModel.state.flowWithLifecycle(viewLifecycleOwner.lifecycle)
+            .onEach {
+                if (it.event != null) {
+                    requireActivity().supportFragmentManager.setFragmentResult(
+                        POST_CREATED_RESULT,
+                        bundleOf()
+                    )
+                    findNavController().navigateUp()
+                }
+
+                it.status.throwableOrNull?.getErrorText(requireContext())?.let { errorText ->
+                    Toast.makeText(requireContext(), errorText, Toast.LENGTH_SHORT).show()
+                    viewModel.consumeError()
+                }
+            }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
+
         return binding.root
     }
 }

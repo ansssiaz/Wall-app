@@ -23,4 +23,7 @@
     <string name="events_menu">Events</string>
     <string name="users_menu">Users</string>
     <string name="posts_menu">Posts</string>
+    <string name="network_error">Network error</string>
+    <string name="retry">Retry</string>
+    <string name="unknown_error">Unknown error</string>
 </resources>

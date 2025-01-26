@@ -10,26 +10,33 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.eltex.androidschool.R
 import com.eltex.androidschool.model.Event
+import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.temporal.ChronoUnit
 
 class DateDecoration(
     val getEvent: (adapterPosition: Int) -> Event?,
     private val context: Context,
 ) : ItemDecoration() {
-    private val topOffset = context.resources.getDimensionPixelSize(R.dimen.date_decoration_top_offset)
-    private val dateDecorationTextSize = context.resources.getDimension(R.dimen.date_decoration_text_size)
-    private val textMargin = context.resources.getDimensionPixelSize(R.dimen.date_decoration_text_margin)
-    private val textVerticalOffset = context.resources.getDimensionPixelSize(R.dimen.date_decoration_text_vertical_offset)
+    private val topOffset =
+        context.resources.getDimensionPixelSize(R.dimen.date_decoration_top_offset)
+    private val dateDecorationTextSize =
+        context.resources.getDimension(R.dimen.date_decoration_text_size)
+    private val textMargin =
+        context.resources.getDimensionPixelSize(R.dimen.date_decoration_text_margin)
+    private val textVerticalOffset =
+        context.resources.getDimensionPixelSize(R.dimen.date_decoration_text_vertical_offset)
 
     private val paint = Paint().apply {
         color = Color.GRAY
         textSize = dateDecorationTextSize
     }
 
-    private val dateFormat = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm")
-    private val today = dateFormat.format(LocalDateTime.now())
-    private val yesterday = LocalDateTime.now().minusDays(1).format(dateFormat)
+    private val dateFormat = DateTimeFormatter.ofPattern("dd.MM.yy")
+    private val today = Instant.now().toString()
+    private val yesterday = Instant.now().minus(1, ChronoUnit.DAYS).toString()
 
     override fun getItemOffsets(
         outRect: Rect,
@@ -63,11 +70,21 @@ class DateDecoration(
      */
     private fun isSameDate(date1: String?, date2: String?): Boolean {
         if (date1 == null || date2 == null) return false
-        val format = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm")
-        val cal1 = LocalDateTime.parse(date1, format)
-        val cal2 = LocalDateTime.parse(date2, format)
-        return cal1.year == cal2.year &&
-                cal1.dayOfYear == cal2.dayOfYear
+
+        val cal1 = Instant.parse(date1)
+        val cal2 = Instant.parse(date2)
+
+        return cal1.truncatedTo(ChronoUnit.DAYS) == cal2.truncatedTo(ChronoUnit.DAYS)
+    }
+
+    /**
+     * Преобразует дату публикации для разделителей в формат "dd MMM yyyy"
+     * @param isoDate - строка с датой в формате ISO 8601
+     */
+    private fun formatDateFromISO(isoDate: String?): String {
+        val instant = Instant.parse(isoDate)
+        val localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+        return dateFormat.format(localDateTime)
     }
 
     /**
@@ -84,19 +101,18 @@ class DateDecoration(
             if (event != null) {
                 if (position == 0 || isDateChanged(position)) {
                     val date = getEvent(position)?.published
+                    val formattedDate = formatDateFromISO(date)
                     val label = when {
                         isSameDate(date, today) -> context.getString(R.string.date_today)
                         isSameDate(date, yesterday) -> context.getString(R.string.date_yesterday)
-                        else -> date?.substringBefore(" ")
+                        else -> formattedDate
                     }
-                    if (label != null) {
-                        c.drawText(
-                            label,
-                            textMargin.toFloat(),
-                            child.top - textVerticalOffset.toFloat(),
-                            paint
-                        )
-                    }
+                    c.drawText(
+                        label,
+                        textMargin.toFloat(),
+                        child.top - textVerticalOffset.toFloat(),
+                        paint
+                    )
                 }
             }
         }

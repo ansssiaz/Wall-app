@@ -22,4 +22,7 @@
     <string name="events_menu">События</string>
     <string name="users_menu">Пользователи</string>
     <string name="posts_menu">Посты</string>
+    <string name="network_error">Ошибка сети</string>
+    <string name="retry">Повторить попытку</string>
+    <string name="unknown_error">Неизвестная ошибка</string>
 </resources>
