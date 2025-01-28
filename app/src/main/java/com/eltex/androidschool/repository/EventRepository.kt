@@ -9,5 +9,5 @@ interface EventRepository {
     fun participate(id : Long, callback: Callback<Event>)
     fun deleteParticipation(id: Long, callback: Callback<Event>)
     fun saveEvent(id: Long, content: String, callback: Callback<Event>)
-    fun deleteById(id: Long, callback: Callback<Unit>)
+    fun delete(id: Long, callback: Callback<Unit>)
 }

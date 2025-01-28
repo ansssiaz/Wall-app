@@ -23,7 +23,7 @@ class NewEventViewModel(
                 _state.update { it.copy(event = data, status = Status.Idle) }
             }
 
-            override fun onError(exception: Exception) {
+            override fun onError(exception: Throwable) {
                 _state.update { it.copy(status = Status.Error(exception)) }
             }
         }

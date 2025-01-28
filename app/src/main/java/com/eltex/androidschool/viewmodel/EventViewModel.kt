@@ -29,7 +29,7 @@ data class EventViewModel(private val repository: EventRepository) : ViewModel()
                     }
                 }
 
-                override fun onError(exception: Exception) {
+                override fun onError(exception: Throwable) {
                     _uiState.update {
                         it.copy(status = Status.Error(exception))
                     }
@@ -67,7 +67,7 @@ data class EventViewModel(private val repository: EventRepository) : ViewModel()
                         )
                     }
                 }
-                override fun onError(exception: Exception) {
+                override fun onError(exception: Throwable) {
                     _uiState.update {
                         it.copy(status = Status.Error(exception))
                     }
@@ -90,7 +90,7 @@ data class EventViewModel(private val repository: EventRepository) : ViewModel()
                     }
                 }
 
-                override fun onError(exception: Exception) {
+                override fun onError(exception: Throwable) {
                     _uiState.update {
                         it.copy(status = Status.Error(exception))
                     }
@@ -117,7 +117,7 @@ data class EventViewModel(private val repository: EventRepository) : ViewModel()
                         )
                     }
                 }
-                override fun onError(exception: Exception) {
+                override fun onError(exception: Throwable) {
                     _uiState.update {
                         it.copy(status = Status.Error(exception))
                     }
@@ -140,7 +140,7 @@ data class EventViewModel(private val repository: EventRepository) : ViewModel()
                     }
                 }
 
-                override fun onError(exception: Exception) {
+                override fun onError(exception: Throwable) {
                     _uiState.update {
                         it.copy(status = Status.Error(exception))
                     }
@@ -151,7 +151,7 @@ data class EventViewModel(private val repository: EventRepository) : ViewModel()
 
     fun deleteById(id: Long) {
         _uiState.update { it.copy(status = Status.Loading) }
-        repository.deleteById(id, object : Callback<Unit> {
+        repository.delete(id, object : Callback<Unit> {
             override fun onSuccess(data: Unit) {
                 _uiState.update { state ->
                     state.copy(
@@ -160,7 +160,7 @@ data class EventViewModel(private val repository: EventRepository) : ViewModel()
                     )
                 }
             }
-            override fun onError(exception: Exception) {
+            override fun onError(exception: Throwable) {
                 _uiState.update {
                     it.copy(status = Status.Error(exception))
                 }

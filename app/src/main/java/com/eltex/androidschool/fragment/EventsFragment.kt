@@ -17,6 +17,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.fragment.findNavController
 import com.eltex.androidschool.adapter.EventsAdapter
+import com.eltex.androidschool.api.EventsApi
 import com.eltex.androidschool.databinding.FragmentEventsBinding
 import com.eltex.androidschool.itemdecoration.DateDecoration
 import com.eltex.androidschool.itemdecoration.OffsetDecoration
@@ -43,7 +44,7 @@ class EventsFragment : Fragment() {
         val viewModel by viewModels<EventViewModel> {
             viewModelFactory {
                 initializer {
-                    EventViewModel(NetworkEventRepository())
+                    EventViewModel(NetworkEventRepository(EventsApi.INSTANCE))
                 }
             }
         }
