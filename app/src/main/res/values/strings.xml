@@ -16,7 +16,7 @@
     <string name="edit_event_title">Edit event</string>
     <string name="content_hint">Content</string>
     <string name="empty_event_error">Text cannot be blank</string>
-    <string name="add_event_description">Add event</string>
+    <string name="add_button_description">Add</string>
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
     <string name="share_text">Author: %s, content: %s</string>
@@ -26,4 +26,6 @@
     <string name="network_error">Network error</string>
     <string name="retry">Retry</string>
     <string name="unknown_error">Unknown error</string>
+    <string name="edit_post">Edit post</string>
+    <string name="new_post">New post</string>
 </resources>

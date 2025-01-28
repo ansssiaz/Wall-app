@@ -15,7 +15,7 @@
     <string name="edit_event_title">Редактирование события</string>
     <string name="content_hint">Контент</string>
     <string name="empty_event_error">Tекст не может быть пустым</string>
-    <string name="add_event_description">Добавить событие</string>
+    <string name="add_button_description">Добавить событие</string>
     <string name="delete">Удалить</string>
     <string name="edit">Редактировать</string>
     <string name="share_text">Автор: %s, контент: %s</string>
@@ -25,4 +25,6 @@
     <string name="network_error">Ошибка сети</string>
     <string name="retry">Повторить попытку</string>
     <string name="unknown_error">Неизвестная ошибка</string>
+    <string name="edit_post">Редактировать пост</string>
+    <string name="new_post">Новый пост</string>
 </resources>

@@ -16,7 +16,7 @@ import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.ChronoUnit
 
-class DateDecoration(
+class EventDateDecoration(
     val getEvent: (adapterPosition: Int) -> Event?,
     private val context: Context,
 ) : ItemDecoration() {
