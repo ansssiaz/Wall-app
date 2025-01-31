@@ -1,7 +1,8 @@
 package com.eltex.androidschool.api
 
 import com.eltex.androidschool.model.Post
-import retrofit2.Call
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
 import retrofit2.create
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -11,19 +12,19 @@ import retrofit2.http.Path
 
 interface PostsApi {
     @GET("api/posts")
-    fun getPosts(): Call<List<Post>>
+    fun getPosts(): Single<List<Post>>
 
     @POST("api/posts/{id}/likes")
-    fun like(@Path("id") id: Long): Call<Post>
+    fun like(@Path("id") id: Long): Single<Post>
 
     @DELETE("api/posts/{id}/likes")
-    fun deleteLike(@Path("id") id: Long): Call<Post>
+    fun deleteLike(@Path("id") id: Long): Single<Post>
 
     @POST("api/posts")
-    fun save(@Body post: Post): Call<Post>
+    fun save(@Body post: Post): Single<Post>
 
     @DELETE("api/posts/{id}")
-    fun delete(@Path("id") id: Long): Call<Unit>
+    fun delete(@Path("id") id: Long): Completable
 
     companion object {
         val INSTANCE: PostsApi by lazy {

@@ -1,18 +1,28 @@
 package com.eltex.androidschool.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.eltex.androidschool.model.Event
+import com.eltex.androidschool.mapper.EventUiModelMapper
+import com.eltex.androidschool.model.EventUiModel
 import com.eltex.androidschool.model.Status
 import com.eltex.androidschool.repository.EventRepository
-import com.eltex.androidschool.utils.Callback
+import com.eltex.androidschool.utils.SchedulersFactory
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.kotlin.addTo
+import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-data class EventViewModel(private val repository: EventRepository) : ViewModel() {
+data class EventViewModel(
+    private val repository: EventRepository,
+    private val mapper: EventUiModelMapper,
+    private val schedulersFactory: SchedulersFactory = SchedulersFactory.DEFAULT,
+) : ViewModel() {
     private val _uiState = MutableStateFlow(EventUiState())
     val uiState: StateFlow<EventUiState> = _uiState.asStateFlow()
+
+    private val disposable = CompositeDisposable()
 
     init {
         load()
@@ -21,22 +31,27 @@ data class EventViewModel(private val repository: EventRepository) : ViewModel()
     fun load() {
         _uiState.update { it.copy(status = Status.Loading) }
 
-        repository.getEvents(
-            object : Callback<List<Event>> {
-                override fun onSuccess(data: List<Event>) {
+        repository.getEvents()
+            .observeOn(schedulersFactory.computation())
+            .map { events ->
+                events.map {
+                    mapper.map(it)
+                }
+            }
+            .observeOn(schedulersFactory.mainThread())
+            .subscribeBy(
+                onSuccess = { data ->
                     _uiState.update {
                         it.copy(events = data, status = Status.Idle)
                     }
-                }
-
-                override fun onError(exception: Throwable) {
+                },
+                onError = { exception ->
                     _uiState.update {
                         it.copy(status = Status.Error(exception))
                     }
                 }
-
-            }
-        )
+            )
+            .addTo(disposable)
     }
 
     fun consumeError() {
@@ -49,122 +64,150 @@ data class EventViewModel(private val repository: EventRepository) : ViewModel()
         }
     }
 
-    fun like(event: Event) {
+    fun like(event: EventUiModel) {
         _uiState.update { it.copy(status = Status.Loading) }
         if (!event.likedByMe) {
-            repository.like(event.id, object : Callback<Event> {
-                override fun onSuccess(data: Event) {
-                    _uiState.update { state ->
-                        state.copy(
-                            events = state.events.orEmpty().map {
-                                if (it.id == event.id) {
-                                    data
-                                } else {
-                                    it
-                                }
-                            },
-                            status = Status.Idle,
-                        )
-                    }
+            repository.like(event.id)
+                .map {
+                    mapper.map(it)
                 }
-                override fun onError(exception: Throwable) {
-                    _uiState.update {
-                        it.copy(status = Status.Error(exception))
+                .subscribeBy(
+                    onSuccess = { data ->
+                        _uiState.update { state ->
+                            state.copy(
+                                events = state.events.orEmpty().map {
+                                    if (it.id == event.id) {
+                                        data
+                                    } else {
+                                        it
+                                    }
+                                },
+                                status = Status.Idle,
+                            )
+                        }
+                    },
+                    onError = { exception ->
+                        _uiState.update {
+                            it.copy(status = Status.Error(exception))
+                        }
                     }
-                }
-            })
+                )
+                .addTo(disposable)
         } else {
-            repository.deleteLike(event.id, object : Callback<Event> {
-                override fun onSuccess(data: Event) {
-                    _uiState.update { state ->
-                        state.copy(
-                            events = state.events.orEmpty().map {
-                                if (it.id == event.id) {
-                                    data
-                                } else {
-                                    it
-                                }
-                            },
-                            status = Status.Idle,
-                        )
-                    }
+            repository.deleteLike(event.id)
+                .map {
+                    mapper.map(it)
                 }
-
-                override fun onError(exception: Throwable) {
-                    _uiState.update {
-                        it.copy(status = Status.Error(exception))
+                .subscribeBy(
+                    onSuccess = { data ->
+                        _uiState.update { state ->
+                            state.copy(
+                                events = state.events.orEmpty().map {
+                                    if (it.id == event.id) {
+                                        data
+                                    } else {
+                                        it
+                                    }
+                                },
+                                status = Status.Idle,
+                            )
+                        }
+                    },
+                    onError = { exception ->
+                        _uiState.update {
+                            it.copy(status = Status.Error(exception))
+                        }
                     }
-                }
-            })
+                )
+                .addTo(disposable)
         }
     }
 
-    fun participate(event: Event) {
+    fun participate(event: EventUiModel) {
         _uiState.update { it.copy(status = Status.Loading) }
         if (!event.participatedByMe) {
-            repository.participate(event.id, object : Callback<Event> {
-                override fun onSuccess(data: Event) {
-                    _uiState.update { state ->
-                        state.copy(
-                            events = state.events.orEmpty().map {
-                                if (it.id == event.id) {
-                                    data
-                                } else {
-                                    it
-                                }
-                            },
-                            status = Status.Idle,
-                        )
-                    }
+            repository.participate(event.id)
+                .map {
+                    mapper.map(it)
                 }
-                override fun onError(exception: Throwable) {
-                    _uiState.update {
-                        it.copy(status = Status.Error(exception))
-                    }
-                }
-            })
-        } else {
-            repository.deleteParticipation(event.id, object : Callback<Event> {
-                override fun onSuccess(data: Event) {
-                    _uiState.update { state ->
-                        state.copy(
-                            events = state.events.orEmpty().map {
-                                if (it.id == event.id) {
-                                    data
-                                } else {
-                                    it
-                                }
-                            },
-                            status = Status.Idle,
-                        )
-                    }
-                }
+                .subscribeBy(
+                    onSuccess = { data ->
+                        _uiState.update { state ->
+                            state.copy(
+                                events = state.events.orEmpty().map {
+                                    if (it.id == event.id) {
+                                        data
+                                    } else {
+                                        it
+                                    }
+                                },
+                                status = Status.Idle,
+                            )
+                        }
+                    },
 
-                override fun onError(exception: Throwable) {
-                    _uiState.update {
-                        it.copy(status = Status.Error(exception))
+                    onError = { exception ->
+                        _uiState.update {
+                            it.copy(status = Status.Error(exception))
+                        }
                     }
+                )
+                .addTo(disposable)
+
+        } else {
+            repository.deleteParticipation(event.id)
+                .map {
+                    mapper.map(it)
                 }
-            })
+                .subscribeBy(
+                    onSuccess = { data ->
+                        _uiState.update { state ->
+                            state.copy(
+                                events = state.events.orEmpty().map {
+                                    if (it.id == event.id) {
+                                        data
+                                    } else {
+                                        it
+                                    }
+                                },
+                                status = Status.Idle,
+                            )
+                        }
+                    },
+
+                    onError = { exception ->
+                        _uiState.update {
+                            it.copy(status = Status.Error(exception))
+                        }
+                    }
+                )
+                .addTo(disposable)
         }
     }
 
     fun deleteById(id: Long) {
         _uiState.update { it.copy(status = Status.Loading) }
-        repository.delete(id, object : Callback<Unit> {
-            override fun onSuccess(data: Unit) {
-                _uiState.update { state ->
-                    state.copy(
-                        events = state.events.orEmpty().filter { it.id != id },
-                        status = Status.Idle,
-                    )
+        repository.delete(id)
+            .subscribeBy(
+                onComplete = {
+                    _uiState.update { state ->
+                        state.copy(
+                            events = state.events.orEmpty().filter { it.id != id },
+                            status = Status.Idle,
+                        )
+                    }
+                },
+
+                onError = { exception ->
+                    _uiState.update {
+                        it.copy(status = Status.Error(exception))
+                    }
                 }
-            }
-            override fun onError(exception: Throwable) {
-                _uiState.update {
-                    it.copy(status = Status.Error(exception))
-                }
-            }
-        })
+            )
+            .addTo(disposable)
+    }
+
+    override fun onCleared() {
+        disposable.dispose()
     }
 }

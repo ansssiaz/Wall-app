@@ -25,12 +25,11 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-
 class NewEventFragment : Fragment() {
     companion object {
         const val ARG_EVENT_ID = "ARG_EVENT_ID"
         const val ARG_CONTENT = "ARG_CONTENT"
-        const val POST_CREATED_RESULT = "POST_CREATED_RESULT"
+        const val EVENT_CREATED_RESULT = "EVENT_CREATED_RESULT"
     }
 
     private val toolbarViewModel by activityViewModels<ToolbarViewModel>()
@@ -95,7 +94,7 @@ class NewEventFragment : Fragment() {
             .onEach {
                 if (it.event != null) {
                     requireActivity().supportFragmentManager.setFragmentResult(
-                        POST_CREATED_RESULT,
+                        EVENT_CREATED_RESULT,
                         bundleOf()
                     )
                     findNavController().navigateUp()

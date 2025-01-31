@@ -1,10 +1,10 @@
 package com.eltex.androidschool.viewmodel
 
-import com.eltex.androidschool.model.Event
+import com.eltex.androidschool.model.EventUiModel
 import com.eltex.androidschool.model.Status
 
 data class EventUiState(
-    val events: List<Event>? = null,
+    val events: List<EventUiModel>? = null,
     val status: Status = Status.Idle,
 ) {
     val isRefreshing: Boolean = status == Status.Loading && events?.isNotEmpty() == true

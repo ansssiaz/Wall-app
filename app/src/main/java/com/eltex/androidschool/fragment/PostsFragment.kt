@@ -21,7 +21,8 @@ import com.eltex.androidschool.api.PostsApi
 import com.eltex.androidschool.databinding.FragmentPostsBinding
 import com.eltex.androidschool.itemdecoration.OffsetDecoration
 import com.eltex.androidschool.itemdecoration.PostDateDecoration
-import com.eltex.androidschool.model.Post
+import com.eltex.androidschool.mapper.PostUiModelMapper
+import com.eltex.androidschool.model.PostUiModel
 import com.eltex.androidschool.repository.NetworkPostRepository
 import com.eltex.androidschool.utils.getErrorText
 import com.eltex.androidschool.viewmodel.PostViewModel
@@ -44,17 +45,17 @@ class PostsFragment : Fragment() {
         val viewModel by viewModels<PostViewModel> {
             viewModelFactory {
                 initializer {
-                    PostViewModel(NetworkPostRepository(PostsApi.INSTANCE))
+                    PostViewModel(NetworkPostRepository(PostsApi.INSTANCE), PostUiModelMapper())
                 }
             }
         }
         val adapter = PostsAdapter(
             object : PostsAdapter.PostListener {
-                override fun onLikeClicked(post: Post) {
+                override fun onLikeClicked(post: PostUiModel) {
                     viewModel.like(post)
                 }
 
-                override fun onShareClicked(post: Post) {
+                override fun onShareClicked(post: PostUiModel) {
                     val intent = Intent()
                         .setAction(Intent.ACTION_SEND)
                         .putExtra(
@@ -66,11 +67,11 @@ class PostsFragment : Fragment() {
                     startActivity(chooser)
                 }
 
-                override fun onDeleteClicked(post: Post) {
+                override fun onDeleteClicked(post: PostUiModel) {
                     viewModel.deleteById(post.id)
                 }
 
-                override fun onEditClicked(post: Post) {
+                override fun onEditClicked(post: PostUiModel) {
                     findNavController().navigate(
                         R.id.action_postsFragment_to_newPostFragment,
                         bundleOf(

@@ -9,15 +9,14 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.eltex.androidschool.R
-import com.eltex.androidschool.model.Post
+import com.eltex.androidschool.model.PostUiModel
 import org.threeten.bp.Instant
-import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.ChronoUnit
 
 class PostDateDecoration(
-    val getPost: (adapterPosition: Int) -> Post?,
+    val getPost: (adapterPosition: Int) -> PostUiModel?,
     private val context: Context,
 ) : ItemDecoration() {
     private val topOffset =
@@ -35,8 +34,10 @@ class PostDateDecoration(
     }
 
     private val dateFormat = DateTimeFormatter.ofPattern("dd.MM.yy")
-    private val today = Instant.now().toString()
-    private val yesterday = Instant.now().minus(1, ChronoUnit.DAYS).toString()
+    private val today = dateFormat.format(Instant.now().atZone(ZoneId.systemDefault()))
+    private val yesterday = dateFormat.format(
+        Instant.now().minus(1, ChronoUnit.DAYS).atZone(ZoneId.systemDefault())
+    )
 
     override fun getItemOffsets(
         outRect: Rect,
@@ -57,8 +58,8 @@ class PostDateDecoration(
      * @param position - индекс проверяемого поста
      */
     private fun isDateChanged(position: Int): Boolean {
-        val currentPostDate = getPost(position)?.published
-        val previousPostDate = getPost(position - 1)?.published
+        val currentPostDate = getPost(position)?.published?.substring(0, 8)
+        val previousPostDate = getPost(position - 1)?.published?.substring(0, 8)
 
         return !isSameDate(currentPostDate, previousPostDate)
     }
@@ -70,21 +71,7 @@ class PostDateDecoration(
      */
     private fun isSameDate(date1: String?, date2: String?): Boolean {
         if (date1 == null || date2 == null) return false
-
-        val cal1 = Instant.parse(date1)
-        val cal2 = Instant.parse(date2)
-
-        return cal1.truncatedTo(ChronoUnit.DAYS) == cal2.truncatedTo(ChronoUnit.DAYS)
-    }
-
-    /**
-     * Преобразует дату публикации для разделителей в формат "dd MMM yyyy"
-     * @param isoDate - строка с датой в формате ISO 8601
-     */
-    private fun formatDateFromISO(isoDate: String?): String {
-        val instant = Instant.parse(isoDate)
-        val localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
-        return dateFormat.format(localDateTime)
+        return date1 == date2
     }
 
     /**
@@ -100,19 +87,20 @@ class PostDateDecoration(
             val post = getPost(position) // Получаем пост по позиции
             if (post != null) {
                 if (position == 0 || isDateChanged(position)) {
-                    val date = getPost(position)?.published
-                    val formattedDate = formatDateFromISO(date)
+                    val date = getPost(position)?.published?.substring(0, 8)
                     val label = when {
                         isSameDate(date, today) -> context.getString(R.string.date_today)
                         isSameDate(date, yesterday) -> context.getString(R.string.date_yesterday)
-                        else -> formattedDate
+                        else -> date
                     }
-                    c.drawText(
-                        label,
-                        textMargin.toFloat(),
-                        child.top - textVerticalOffset.toFloat(),
-                        paint
-                    )
+                    if (label != null) {
+                        c.drawText(
+                            label,
+                            textMargin.toFloat(),
+                            child.top - textVerticalOffset.toFloat(),
+                            paint
+                        )
+                    }
                 }
             }
         }

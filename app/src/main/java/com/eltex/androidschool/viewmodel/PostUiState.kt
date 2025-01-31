@@ -1,10 +1,10 @@
 package com.eltex.androidschool.viewmodel
 
-import com.eltex.androidschool.model.Post
+import com.eltex.androidschool.model.PostUiModel
 import com.eltex.androidschool.model.Status
 
 data class PostUiState(
-    val posts: List<Post>? = null,
+    val posts: List<PostUiModel>? = null,
     val status: Status = Status.Idle,
 ) {
     val isRefreshing: Boolean = status == Status.Loading && posts?.isNotEmpty() == true

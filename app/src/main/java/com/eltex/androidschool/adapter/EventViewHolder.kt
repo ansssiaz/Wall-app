@@ -4,25 +4,25 @@ import android.annotation.SuppressLint
 import androidx.recyclerview.widget.RecyclerView
 import com.eltex.androidschool.R
 import com.eltex.androidschool.databinding.CardEventBinding
-import com.eltex.androidschool.model.Event
+import com.eltex.androidschool.model.EventUiModel
 import com.eltex.androidschool.model.Type
 
 class EventViewHolder(
     private val binding: CardEventBinding,
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(payload: EventPayload) {
-        if (payload.like != null) {
-            updateLike(payload.like)
+        if (payload.like != null && payload.likes != null) {
+            updateLike(payload.like, payload.likes)
         }
-        if (payload.participate != null) {
-            updateParticipate(payload.participate)
+        if (payload.participants != null && payload.participate != null) {
+            updateParticipate(payload.participate, payload.participants)
         }
     }
 
-    fun bind(event: Event) {
+    fun bind(event: EventUiModel) {
         binding.content.text = event.content
-        updateLike(event.likedByMe)
-        updateParticipate(event.participatedByMe)
+        updateLike(event.likedByMe, event.likes)
+        updateParticipate(event.participatedByMe, event.participants)
         binding.author.text = event.author
         binding.published.text = event.published
         binding.datetime.text = event.datetime
@@ -37,7 +37,7 @@ class EventViewHolder(
     }
 
     @SuppressLint("SetTextI18n")
-    private fun updateLike(likedByMe: Boolean) {
+    private fun updateLike(likedByMe: Boolean, likes: Int) {
         binding.like.setIconResource(
             if (likedByMe) {
                 R.drawable.liked_icon
@@ -45,21 +45,18 @@ class EventViewHolder(
                 R.drawable.like_icon_border
             }
         )
-        binding.like.text = if (likedByMe) {
-            1
-        } else {
-            0
-        }
-            .toString()
+        binding.like.text = likes.toString()
     }
 
     @SuppressLint("SetTextI18n")
-    private fun updateParticipate(participatedByMe: Boolean) {
-        binding.participate.text = if (participatedByMe) {
-            1
-        } else {
-            0
-        }
-            .toString()
+    private fun updateParticipate(participatedByMe: Boolean, participants: Int) {
+        binding.participate.setIconResource(
+            if (participatedByMe){
+                R.drawable.baseline_people_24
+            } else {
+                R.drawable.people_outline
+            }
+        )
+        binding.participate.text = participants.toString()
     }
 }

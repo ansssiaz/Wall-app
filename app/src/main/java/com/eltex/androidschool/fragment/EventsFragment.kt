@@ -21,7 +21,8 @@ import com.eltex.androidschool.api.EventsApi
 import com.eltex.androidschool.databinding.FragmentEventsBinding
 import com.eltex.androidschool.itemdecoration.EventDateDecoration
 import com.eltex.androidschool.itemdecoration.OffsetDecoration
-import com.eltex.androidschool.model.Event
+import com.eltex.androidschool.mapper.EventUiModelMapper
+import com.eltex.androidschool.model.EventUiModel
 import com.eltex.androidschool.repository.NetworkEventRepository
 import com.eltex.androidschool.utils.getErrorText
 import com.eltex.androidschool.viewmodel.EventViewModel
@@ -44,21 +45,21 @@ class EventsFragment : Fragment() {
         val viewModel by viewModels<EventViewModel> {
             viewModelFactory {
                 initializer {
-                    EventViewModel(NetworkEventRepository(EventsApi.INSTANCE))
+                    EventViewModel(NetworkEventRepository(EventsApi.INSTANCE), EventUiModelMapper())
                 }
             }
         }
         val adapter = EventsAdapter(
             object : EventsAdapter.EventListener {
-                override fun onLikeClicked(event: Event) {
+                override fun onLikeClicked(event: EventUiModel) {
                     viewModel.like(event)
                 }
 
-                override fun onParticipateClicked(event: Event) {
+                override fun onParticipateClicked(event: EventUiModel) {
                     viewModel.participate(event)
                 }
 
-                override fun onShareClicked(event: Event) {
+                override fun onShareClicked(event: EventUiModel) {
                     val intent = Intent()
                         .setAction(Intent.ACTION_SEND)
                         .putExtra(
@@ -70,11 +71,11 @@ class EventsFragment : Fragment() {
                     startActivity(chooser)
                 }
 
-                override fun onDeleteClicked(event: Event) {
+                override fun onDeleteClicked(event: EventUiModel) {
                     viewModel.deleteById(event.id)
                 }
 
-                override fun onEditClicked(event: Event) {
+                override fun onEditClicked(event: EventUiModel) {
                     findNavController().navigate(
                         R.id.action_eventsFragment_to_newEventFragment,
                         bundleOf(
@@ -113,7 +114,7 @@ class EventsFragment : Fragment() {
         }
 
         requireActivity().supportFragmentManager.setFragmentResultListener(
-            NewEventFragment.POST_CREATED_RESULT,
+            NewEventFragment.EVENT_CREATED_RESULT,
             viewLifecycleOwner
         ) { _, _ ->
             viewModel.load()

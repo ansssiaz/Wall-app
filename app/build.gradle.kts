@@ -43,6 +43,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -79,4 +80,10 @@ dependencies {
 
     implementation(libs.retrofit)
     implementation(libs.retrofit2.kotlinx.serialization.converter)
+
+    implementation(libs.rxandroid)
+    implementation(libs.rxjava)
+    implementation(libs.adapter.rxjava3)
+    implementation(libs.rxkotlin)
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 }

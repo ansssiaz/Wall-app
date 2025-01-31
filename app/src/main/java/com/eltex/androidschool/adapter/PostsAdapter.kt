@@ -6,17 +6,17 @@ import android.widget.PopupMenu
 import androidx.recyclerview.widget.ListAdapter
 import com.eltex.androidschool.R
 import com.eltex.androidschool.databinding.CardPostBinding
-import com.eltex.androidschool.model.Post
+import com.eltex.androidschool.model.PostUiModel
 
 class PostsAdapter(
     private val listener: PostListener,
-) : ListAdapter<Post, PostViewHolder>(PostDiffCallback()) {
+) : ListAdapter<PostUiModel, PostViewHolder>(PostDiffCallback()) {
 
     interface PostListener {
-        fun onLikeClicked(post: Post)
-        fun onShareClicked(post: Post)
-        fun onDeleteClicked(post: Post)
-        fun onEditClicked(post: Post)
+        fun onLikeClicked(post: PostUiModel)
+        fun onShareClicked(post: PostUiModel)
+        fun onDeleteClicked(post: PostUiModel)
+        fun onEditClicked(post: PostUiModel)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
