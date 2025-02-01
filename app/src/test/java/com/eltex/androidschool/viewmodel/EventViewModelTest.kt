@@ -9,6 +9,7 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
+import org.threeten.bp.Instant
 
 class EventViewModelTest {
     @Test
@@ -19,7 +20,7 @@ class EventViewModelTest {
                 override fun getEvents(): Single<List<Event>> = Single.just(emptyList())
                 override fun like(id: Long): Single<Event> = Single.never()
                 override fun participate(id: Long): Single<Event> = Single.never()
-                override fun saveEvent(id: Long, content: String): Single<Event> =
+                override fun saveEvent(id: Long, content: String, datetime: Instant): Single<Event> =
                     Single.error(RuntimeException())
 
                 override fun delete(id: Long): Completable = Completable.error(error)

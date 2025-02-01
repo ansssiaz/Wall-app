@@ -10,7 +10,7 @@
     <EditText
         android:id="@+id/content"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:gravity="top"
         android:hint="@string/content_hint"
@@ -19,8 +19,41 @@
         android:letterSpacing="0.02"
         android:lineSpacingExtra="4sp"
         android:padding="@dimen/common_spacing"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/text_input_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_input_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:hint="@string/selected_date_hint"
+        app:layout_constraintEnd_toStartOf="@id/button_select_date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/content">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_text_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            tools:layout_editor_absoluteX="-6dp"
+            tools:layout_editor_absoluteY="131dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/button_select_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/select_date_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/content"
+        tools:layout_editor_absoluteX="254dp"
+        tools:layout_editor_absoluteY="622dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -27,4 +27,7 @@
     <string name="unknown_error">Неизвестная ошибка</string>
     <string name="edit_post">Редактировать пост</string>
     <string name="new_post">Новый пост</string>
+    <string name="date_picker_title">Выберите дату</string>
+    <string name="selected_date_hint">Выбранная дата</string>
+    <string name="select_date_button">Выбрать дату</string>
 </resources>

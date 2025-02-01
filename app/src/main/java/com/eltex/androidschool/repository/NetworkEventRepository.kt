@@ -5,26 +5,18 @@ import com.eltex.androidschool.model.Event
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import org.threeten.bp.Instant
-import java.util.concurrent.TimeUnit
 
 class NetworkEventRepository(private val api: EventsApi) : EventRepository {
 
     override fun getEvents(): Single<List<Event>> = api.getEvents()
 
-    override fun saveEvent(id: Long, content: String): Single<Event> {
-        val today = Instant.now()
-
-        return Single.just(
-            Event(
-                id = id,
-                content = content,
-                published = today,
-                datetime = today
-            )
+    override fun saveEvent(id: Long, content: String, datetime: Instant): Single<Event> = api.save(
+        Event(
+            id = id,
+            content = content,
+            datetime = datetime
         )
-            .delay(1, TimeUnit.SECONDS)
-            .flatMap { event -> api.save(event) }
-    }
+    )
 
     override fun delete(id: Long): Completable = api.delete(id)
 

@@ -21,11 +21,9 @@ data class Event(
     @SerialName("published")
     @Serializable(InstantSerializer::class)
     val published: Instant = Instant.now(),
-    //val published: String = "",
     @SerialName("datetime")
     @Serializable(InstantSerializer::class)
     val datetime: Instant = Instant.now(),
-    //val datetime: String = "",
     @SerialName("type")
     val type: Type = Type.OFFLINE,
     @SerialName("likeOwnerIds")

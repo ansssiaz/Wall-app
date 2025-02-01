@@ -81,6 +81,7 @@ class EventsFragment : Fragment() {
                         bundleOf(
                             NewEventFragment.ARG_EVENT_ID to event.id,
                             NewEventFragment.ARG_CONTENT to event.content,
+                            NewEventFragment.ARG_DATETIME to event.datetime
                         )
                     )
                 }

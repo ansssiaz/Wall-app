@@ -28,4 +28,7 @@
     <string name="unknown_error">Unknown error</string>
     <string name="edit_post">Edit post</string>
     <string name="new_post">New post</string>
+    <string name="date_picker_title">Select a date</string>
+    <string name="selected_date_hint">Selected date</string>
+    <string name="select_date_button">Select a date</string>
 </resources>

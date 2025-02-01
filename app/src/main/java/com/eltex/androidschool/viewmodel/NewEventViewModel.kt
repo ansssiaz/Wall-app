@@ -9,6 +9,7 @@ import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import org.threeten.bp.Instant
 
 class NewEventViewModel(
     private val repository: EventRepository,
@@ -19,9 +20,9 @@ class NewEventViewModel(
 
     private val disposable = CompositeDisposable()
 
-    fun addEvent(content: String) {
+    fun addEvent(content: String, datetime: Instant) {
         _state.update { it.copy(status = Status.Loading) }
-        repository.saveEvent(id, content)
+        repository.saveEvent(id, content, datetime)
             .subscribeBy(
                 onSuccess = { data ->
                     _state.update { it.copy(event = data, status = Status.Idle) }
