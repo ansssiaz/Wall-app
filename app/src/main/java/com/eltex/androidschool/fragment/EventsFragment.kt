@@ -76,8 +76,8 @@ class EventsFragment : Fragment() {
                 }
 
                 override fun onEditClicked(event: EventUiModel) {
-                    findNavController().navigate(
-                        R.id.action_eventsFragment_to_newEventFragment,
+                    requireParentFragment().requireParentFragment().findNavController().navigate(
+                        R.id.action_bottomMenuFragment_to_newEventFragment,
                         bundleOf(
                             NewEventFragment.ARG_EVENT_ID to event.id,
                             NewEventFragment.ARG_CONTENT to event.content,

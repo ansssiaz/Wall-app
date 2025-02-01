@@ -9,35 +9,17 @@
         android:id="@+id/postsFragment"
         android:name="com.eltex.androidschool.fragment.PostsFragment"
         tools:layout="@layout/fragment_posts"
-        android:label="fragment_posts">
-
-    <action
-        android:id="@+id/action_postsFragment_to_newPostFragment"
-        app:destination="@id/newPostFragment" />
-    </fragment>
+        android:label="fragment_posts"/>
 
     <fragment
         android:id="@+id/eventsFragment"
         android:name="com.eltex.androidschool.fragment.EventsFragment"
         android:label="fragment_events"
-        tools:layout="@layout/fragment_events">
-    <action
-        android:id="@+id/action_eventsFragment_to_newEventFragment"
-        app:destination="@id/newEventFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_events"/>
 
     <fragment
         android:id="@+id/usersFragment"
         android:name="com.eltex.androidschool.fragment.UsersFragment"
         android:label="fragment_users" />
 
-    <fragment
-        android:id="@+id/newEventFragment"
-        android:name="com.eltex.androidschool.fragment.NewEventFragment"
-        tools:layout="@layout/fragment_new_event" />
-
-    <fragment
-        android:id="@+id/newPostFragment"
-        android:name="com.eltex.androidschool.fragment.NewPostFragment"
-        tools:layout="@layout/fragment_new_post" />
 </navigation>

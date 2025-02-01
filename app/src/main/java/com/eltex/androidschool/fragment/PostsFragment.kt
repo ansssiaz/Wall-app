@@ -72,8 +72,8 @@ class PostsFragment : Fragment() {
                 }
 
                 override fun onEditClicked(post: PostUiModel) {
-                    findNavController().navigate(
-                        R.id.action_postsFragment_to_newPostFragment,
+                    requireParentFragment().requireParentFragment().findNavController().navigate(
+                        R.id.action_bottomMenuFragment_to_newPostFragment,
                         bundleOf(
                             NewPostFragment.ARG_POST_ID to post.id,
                             NewPostFragment.ARG_CONTENT to post.content,
