@@ -1,14 +1,13 @@
 package com.eltex.androidschool.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.eltex.androidschool.model.Status
 import com.eltex.androidschool.repository.PostRepository
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.kotlin.addTo
-import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class NewPostViewModel(
     private val repository: PostRepository,
@@ -17,27 +16,22 @@ class NewPostViewModel(
     private val _state = MutableStateFlow(NewPostUiState())
     val state = _state.asStateFlow()
 
-    private val disposable = CompositeDisposable()
-
     fun addPost(content: String) {
         _state.update { it.copy(status = Status.Loading) }
-        repository.savePost(id, content)
-            .subscribeBy(
-                onSuccess = { data ->
-                    _state.update { it.copy(post = data, status = Status.Idle) }
-                },
-                onError = { exception ->
-                    _state.update { it.copy(status = Status.Error(exception)) }
+
+        viewModelScope.launch {
+            try {
+                val post = repository.savePost(id, content)
+                _state.update { it.copy(post = post, status = Status.Idle) }
+            } catch (e: Exception) {
+                _state.update {
+                    it.copy(status = Status.Error(e))
                 }
-            )
-            .addTo(disposable)
+            }
+        }
     }
 
     fun consumeError() {
         _state.update { it.copy(status = Status.Idle) }
-    }
-
-    override fun onCleared() {
-        disposable.dispose()
     }
 }

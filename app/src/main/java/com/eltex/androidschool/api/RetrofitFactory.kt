@@ -4,7 +4,6 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 
 object RetrofitFactory {
     private val contentType = "application/json".toMediaType()
@@ -14,7 +13,6 @@ object RetrofitFactory {
             .client(OkHttpClientFactory.INSTANCE)
             .baseUrl("https://eltex-android.ru/")
             .addConverterFactory(json.asConverterFactory(contentType))
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .build()
     }
 }

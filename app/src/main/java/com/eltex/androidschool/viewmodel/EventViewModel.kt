@@ -1,28 +1,23 @@
 package com.eltex.androidschool.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.eltex.androidschool.mapper.EventUiModelMapper
 import com.eltex.androidschool.model.EventUiModel
 import com.eltex.androidschool.model.Status
 import com.eltex.androidschool.repository.EventRepository
-import com.eltex.androidschool.utils.SchedulersFactory
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.kotlin.addTo
-import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 data class EventViewModel(
     private val repository: EventRepository,
     private val mapper: EventUiModelMapper,
-    private val schedulersFactory: SchedulersFactory = SchedulersFactory.DEFAULT,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(EventUiState())
     val uiState: StateFlow<EventUiState> = _uiState.asStateFlow()
-
-    private val disposable = CompositeDisposable()
 
     init {
         load()
@@ -31,27 +26,23 @@ data class EventViewModel(
     fun load() {
         _uiState.update { it.copy(status = Status.Loading) }
 
-        repository.getEvents()
-            .observeOn(schedulersFactory.computation())
-            .map { events ->
-                events.map {
-                    mapper.map(it)
+        viewModelScope.launch {
+            try {
+                val posts: List<EventUiModel> = repository.getEvents()
+                    .map {
+                        mapper.map(it)
+                    }
+
+                _uiState.update {
+                    it.copy(events = posts, status = Status.Idle)
+                }
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(status = Status.Error(e))
                 }
             }
-            .observeOn(schedulersFactory.mainThread())
-            .subscribeBy(
-                onSuccess = { data ->
-                    _uiState.update {
-                        it.copy(events = data, status = Status.Idle)
-                    }
-                },
-                onError = { exception ->
-                    _uiState.update {
-                        it.copy(status = Status.Error(exception))
-                    }
-                }
-            )
-            .addTo(disposable)
+
+        }
     }
 
     fun consumeError() {
@@ -66,148 +57,84 @@ data class EventViewModel(
 
     fun like(event: EventUiModel) {
         _uiState.update { it.copy(status = Status.Loading) }
-        if (!event.likedByMe) {
-            repository.like(event.id)
-                .map {
-                    mapper.map(it)
+
+        viewModelScope.launch {
+            try {
+                val likedEvent =
+                    if (!event.likedByMe) repository.like(event.id) else repository.deleteLike(event.id)
+
+                val likedEventUiModel = mapper.map(likedEvent)
+
+                _uiState.update { state ->
+                    state.copy(
+                        events = state.events.orEmpty().map {
+                            if (it.id == event.id) {
+                                likedEventUiModel
+                            } else {
+                                it
+                            }
+                        },
+                        status = Status.Idle,
+                    )
                 }
-                .subscribeBy(
-                    onSuccess = { data ->
-                        _uiState.update { state ->
-                            state.copy(
-                                events = state.events.orEmpty().map {
-                                    if (it.id == event.id) {
-                                        data
-                                    } else {
-                                        it
-                                    }
-                                },
-                                status = Status.Idle,
-                            )
-                        }
-                    },
-                    onError = { exception ->
-                        _uiState.update {
-                            it.copy(status = Status.Error(exception))
-                        }
-                    }
-                )
-                .addTo(disposable)
-        } else {
-            repository.deleteLike(event.id)
-                .map {
-                    mapper.map(it)
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(status = Status.Error(e))
                 }
-                .subscribeBy(
-                    onSuccess = { data ->
-                        _uiState.update { state ->
-                            state.copy(
-                                events = state.events.orEmpty().map {
-                                    if (it.id == event.id) {
-                                        data
-                                    } else {
-                                        it
-                                    }
-                                },
-                                status = Status.Idle,
-                            )
-                        }
-                    },
-                    onError = { exception ->
-                        _uiState.update {
-                            it.copy(status = Status.Error(exception))
-                        }
-                    }
-                )
-                .addTo(disposable)
+            }
         }
     }
 
     fun participate(event: EventUiModel) {
         _uiState.update { it.copy(status = Status.Loading) }
-        if (!event.participatedByMe) {
-            repository.participate(event.id)
-                .map {
-                    mapper.map(it)
+
+        viewModelScope.launch {
+            try {
+                val participatedEvent =
+                    if (!event.participatedByMe) repository.participate(event.id) else repository.deleteParticipation(
+                        event.id
+                    )
+
+                val participatedEventUiModel = mapper.map(participatedEvent)
+
+                _uiState.update { state ->
+                    state.copy(
+                        events = state.events.orEmpty().map {
+                            if (it.id == event.id) {
+                                participatedEventUiModel
+                            } else {
+                                it
+                            }
+                        },
+                        status = Status.Idle,
+                    )
                 }
-                .subscribeBy(
-                    onSuccess = { data ->
-                        _uiState.update { state ->
-                            state.copy(
-                                events = state.events.orEmpty().map {
-                                    if (it.id == event.id) {
-                                        data
-                                    } else {
-                                        it
-                                    }
-                                },
-                                status = Status.Idle,
-                            )
-                        }
-                    },
-
-                    onError = { exception ->
-                        _uiState.update {
-                            it.copy(status = Status.Error(exception))
-                        }
-                    }
-                )
-                .addTo(disposable)
-
-        } else {
-            repository.deleteParticipation(event.id)
-                .map {
-                    mapper.map(it)
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(status = Status.Error(e))
                 }
-                .subscribeBy(
-                    onSuccess = { data ->
-                        _uiState.update { state ->
-                            state.copy(
-                                events = state.events.orEmpty().map {
-                                    if (it.id == event.id) {
-                                        data
-                                    } else {
-                                        it
-                                    }
-                                },
-                                status = Status.Idle,
-                            )
-                        }
-                    },
-
-                    onError = { exception ->
-                        _uiState.update {
-                            it.copy(status = Status.Error(exception))
-                        }
-                    }
-                )
-                .addTo(disposable)
+            }
         }
     }
 
     fun deleteById(id: Long) {
         _uiState.update { it.copy(status = Status.Loading) }
-        repository.delete(id)
-            .subscribeBy(
-                onComplete = {
-                    _uiState.update { state ->
-                        state.copy(
-                            events = state.events.orEmpty().filter { it.id != id },
-                            status = Status.Idle,
-                        )
-                    }
-                },
 
-                onError = { exception ->
-                    _uiState.update {
-                        it.copy(status = Status.Error(exception))
-                    }
+        viewModelScope.launch {
+            try {
+                repository.delete(id)
+
+                _uiState.update { state ->
+                    state.copy(
+                        events = state.events.orEmpty().filter { it.id != id },
+                        status = Status.Idle,
+                    )
                 }
-            )
-            .addTo(disposable)
-    }
-
-    override fun onCleared() {
-        disposable.dispose()
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(status = Status.Error(e))
+                }
+            }
+        }
     }
 }

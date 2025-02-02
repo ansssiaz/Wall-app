@@ -1,28 +1,23 @@
 package com.eltex.androidschool.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.eltex.androidschool.mapper.PostUiModelMapper
 import com.eltex.androidschool.model.PostUiModel
 import com.eltex.androidschool.model.Status
 import com.eltex.androidschool.repository.PostRepository
-import com.eltex.androidschool.utils.SchedulersFactory
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.kotlin.addTo
-import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 data class PostViewModel(
     private val repository: PostRepository,
     private val mapper: PostUiModelMapper,
-    private val schedulersFactory: SchedulersFactory = SchedulersFactory.DEFAULT,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(PostUiState())
     val uiState: StateFlow<PostUiState> = _uiState.asStateFlow()
-
-    private val disposable = CompositeDisposable()
 
     init {
         load()
@@ -31,28 +26,23 @@ data class PostViewModel(
     fun load() {
         _uiState.update { it.copy(status = Status.Loading) }
 
-        repository.getPosts()
-            .observeOn(schedulersFactory.computation())
-            .map { posts ->
-                posts.map {
-                    mapper.map(it)
+        viewModelScope.launch {
+            try {
+                val posts: List<PostUiModel> = repository.getPosts()
+                    .map {
+                        mapper.map(it)
+                    }
+
+                _uiState.update {
+                    it.copy(posts = posts, status = Status.Idle)
+                }
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(status = Status.Error(e))
                 }
             }
-            .observeOn(schedulersFactory.mainThread())
-            .subscribeBy(
-                onSuccess = { data ->
-                    _uiState.update {
-                        it.copy(posts = data, status = Status.Idle)
-                    }
-                },
-                onError = { exception ->
-                    _uiState.update {
-                        it.copy(status = Status.Error(exception))
-                    }
-                }
 
-            )
-            .addTo(disposable)
+        }
     }
 
     fun consumeError() {
@@ -67,81 +57,52 @@ data class PostViewModel(
 
     fun like(post: PostUiModel) {
         _uiState.update { it.copy(status = Status.Loading) }
-        if (!post.likedByMe) {
-            repository.like(post.id)
-                .map {
-                    mapper.map(it)
+
+        viewModelScope.launch {
+            try {
+                val likedPost =
+                    if (!post.likedByMe) repository.like(post.id) else repository.deleteLike(post.id)
+
+                val likedPostUiModel = mapper.map(likedPost)
+
+                _uiState.update { state ->
+                    state.copy(
+                        posts = state.posts.orEmpty().map {
+                            if (it.id == post.id) {
+                                likedPostUiModel
+                            } else {
+                                it
+                            }
+                        },
+                        status = Status.Idle,
+                    )
                 }
-                .subscribeBy(
-                    onSuccess = { data ->
-                        _uiState.update { state ->
-                            state.copy(
-                                posts = state.posts.orEmpty().map {
-                                    if (it.id == post.id) {
-                                        data
-                                    } else {
-                                        it
-                                    }
-                                },
-                                status = Status.Idle,
-                            )
-                        }
-                    },
-                    onError = { exception ->
-                        _uiState.update {
-                            it.copy(status = Status.Error(exception))
-                        }
-                    }
-                )
-                .addTo(disposable)
-        } else {
-            repository.deleteLike(post.id)
-                .map {
-                    mapper.map(it)
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(status = Status.Error(e))
                 }
-                .subscribeBy(
-                    onSuccess = { data ->
-                        _uiState.update { state ->
-                            state.copy(
-                                posts = state.posts.orEmpty().map {
-                                    if (it.id == post.id) {
-                                        data
-                                    } else {
-                                        it
-                                    }
-                                },
-                                status = Status.Idle,
-                            )
-                        }
-                    },
-                    onError = { exception ->
-                        _uiState.update {
-                            it.copy(status = Status.Error(exception))
-                        }
-                    }
-                )
-                .addTo(disposable)
+            }
         }
     }
 
     fun deleteById(id: Long) {
         _uiState.update { it.copy(status = Status.Loading) }
-        repository.delete(id)
-            .subscribeBy(
-                onComplete = {
-                    _uiState.update { state ->
-                        state.copy(
-                            posts = state.posts.orEmpty().filter { it.id != id },
-                            status = Status.Idle,
-                        )
-                    }
-                },
-                onError = { exception ->
-                    _uiState.update {
-                        it.copy(status = Status.Error(exception))
-                    }
+
+        viewModelScope.launch {
+            try {
+                repository.delete(id)
+
+                _uiState.update { state ->
+                    state.copy(
+                        posts = state.posts.orEmpty().filter { it.id != id },
+                        status = Status.Idle,
+                    )
                 }
-            )
-            .addTo(disposable)
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(status = Status.Error(e))
+                }
+            }
+        }
     }
 }

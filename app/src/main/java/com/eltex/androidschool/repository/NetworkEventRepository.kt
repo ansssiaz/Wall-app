@@ -2,15 +2,13 @@ package com.eltex.androidschool.repository
 
 import com.eltex.androidschool.api.EventsApi
 import com.eltex.androidschool.model.Event
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Single
 import org.threeten.bp.Instant
 
 class NetworkEventRepository(private val api: EventsApi) : EventRepository {
 
-    override fun getEvents(): Single<List<Event>> = api.getEvents()
+    override suspend fun getEvents(): List<Event> = api.getEvents()
 
-    override fun saveEvent(id: Long, content: String, datetime: Instant): Single<Event> = api.save(
+    override suspend fun saveEvent(id: Long, content: String, datetime: Instant): Event = api.save(
         Event(
             id = id,
             content = content,
@@ -18,13 +16,13 @@ class NetworkEventRepository(private val api: EventsApi) : EventRepository {
         )
     )
 
-    override fun delete(id: Long): Completable = api.delete(id)
+    override suspend fun delete(id: Long) = api.delete(id)
 
-    override fun like(id: Long): Single<Event> = api.like(id)
+    override suspend fun like(id: Long): Event = api.like(id)
 
-    override fun deleteLike(id: Long): Single<Event> = api.deleteLike(id)
+    override suspend fun deleteLike(id: Long): Event = api.deleteLike(id)
 
-    override fun participate(id: Long): Single<Event> = api.participate(id)
+    override suspend fun participate(id: Long): Event = api.participate(id)
 
-    override fun deleteParticipation(id: Long): Single<Event> = api.deleteParticipation(id)
+    override suspend fun deleteParticipation(id: Long): Event = api.deleteParticipation(id)
 }

@@ -86,4 +86,5 @@ dependencies {
     implementation(libs.adapter.rxjava3)
     implementation(libs.rxkotlin)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
+    testImplementation(libs.kotlinx.coroutines.test)
 }
