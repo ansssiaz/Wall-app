@@ -3,8 +3,8 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    kotlin("plugin.serialization") version "1.9.21"
-    id("com.google.devtools.ksp") version "1.9.21-1.0.15"
+    kotlin("plugin.serialization") version "2.1.10"
+    id("com.google.devtools.ksp") version "2.1.0-1.0.29"
 }
 
 android {
@@ -87,4 +87,5 @@ dependencies {
     implementation(libs.rxkotlin)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     testImplementation(libs.kotlinx.coroutines.test)
+    implementation(libs.arrow.core)
 }

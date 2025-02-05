@@ -9,7 +9,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.eltex.androidschool.R
-import com.eltex.androidschool.model.PostUiModel
+import com.eltex.androidschool.feature.posts.ui.PostUiModel
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter

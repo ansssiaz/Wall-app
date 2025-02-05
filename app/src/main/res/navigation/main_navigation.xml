@@ -19,11 +19,11 @@
 
     <fragment
         android:id="@+id/newEventFragment"
-        android:name="com.eltex.androidschool.fragment.NewEventFragment"
+        android:name="com.eltex.androidschool.feature.newevent.fragment.NewEventFragment"
         tools:layout="@layout/fragment_new_event" />
 
     <fragment
         android:id="@+id/newPostFragment"
-        android:name="com.eltex.androidschool.fragment.NewPostFragment"
+        android:name="com.eltex.androidschool.feature.newpost.fragment.NewPostFragment"
         tools:layout="@layout/fragment_new_post" />
 </navigation>

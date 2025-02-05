@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/postsFragment"
-        android:name="com.eltex.androidschool.fragment.PostsFragment"
+        android:name="com.eltex.androidschool.feature.posts.fragment.PostsFragment"
         tools:layout="@layout/fragment_posts"
         android:label="fragment_posts"/>
 
     <fragment
         android:id="@+id/eventsFragment"
-        android:name="com.eltex.androidschool.fragment.EventsFragment"
+        android:name="com.eltex.androidschool.feature.events.fragment.EventsFragment"
         android:label="fragment_events"
         tools:layout="@layout/fragment_events"/>
 

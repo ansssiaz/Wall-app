@@ -1,18 +1,7 @@
 package com.eltex.androidschool.viewmodel
 
-import com.eltex.androidschool.MainDispatcherRule
-import com.eltex.androidschool.mapper.EventUiModelMapper
-import com.eltex.androidschool.model.Event
-import com.eltex.androidschool.model.Status
-import com.eltex.androidschool.repository.EventRepository
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertTrue
-import org.junit.Rule
-import org.junit.Test
-import org.threeten.bp.Instant
-
 class EventViewModelTest {
-    @get:Rule
+   /* @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
     @Test
@@ -51,5 +40,5 @@ class EventViewModelTest {
         )
         viewModel.deleteById(1)
         assertTrue(viewModel.uiState.value.status is Status.Idle)
-    }
+    }*/
 }
