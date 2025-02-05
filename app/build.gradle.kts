@@ -88,4 +88,5 @@ dependencies {
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     testImplementation(libs.kotlinx.coroutines.test)
     implementation(libs.arrow.core)
+    implementation(libs.koleton)
 }

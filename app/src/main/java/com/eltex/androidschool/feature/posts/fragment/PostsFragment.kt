@@ -24,10 +24,10 @@ import com.eltex.androidschool.feature.posts.api.PostsApi
 import com.eltex.androidschool.feature.posts.effecthandler.PostEffectHandler
 import com.eltex.androidschool.feature.posts.reducer.PostReducer
 import com.eltex.androidschool.feature.posts.repository.NetworkPostRepository
+import com.eltex.androidschool.feature.posts.ui.PostPagingMapper
 import com.eltex.androidschool.feature.posts.ui.PostUiModel
 import com.eltex.androidschool.feature.posts.ui.PostUiModelMapper
 import com.eltex.androidschool.feature.posts.viewmodel.PostMessage
-import com.eltex.androidschool.feature.posts.viewmodel.PostStatus.*
 import com.eltex.androidschool.feature.posts.viewmodel.PostStore
 import com.eltex.androidschool.feature.posts.viewmodel.PostUiState
 import com.eltex.androidschool.feature.posts.viewmodel.PostViewModel
@@ -39,7 +39,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 class PostsFragment : Fragment() {
-    private var isLoading = false
+    //private var isLoading = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AndroidThreeTen.init(requireContext())
@@ -142,8 +142,12 @@ class PostsFragment : Fragment() {
                     val adapterPosition = binding.list.getChildAdapterPosition(view)
 
                     //Если пользователь доскроллил до середины списка, и данные сейчас не загружаются - загружаем следующую страницу
-                    if (adapterPosition >= itemsCount / 2 && adapterPosition < itemsCount - 2 && !isLoading) {
+/*                    if (adapterPosition >= itemsCount / 2 && adapterPosition < itemsCount - 2 && !isLoading) {
                         isLoading = true
+                        viewModel.accept(PostMessage.LoadNextPage)
+                    }*/
+
+                    if (itemsCount - 1 == adapterPosition) {
                         viewModel.accept(PostMessage.LoadNextPage)
                     }
                 }
@@ -155,7 +159,7 @@ class PostsFragment : Fragment() {
         viewModel.uiState
             .flowWithLifecycle(viewLifecycleOwner.lifecycle)
             .onEach {
-                isLoading = when (it.status) {
+/*                isLoading = when (it.status) {
                     NextPageLoading -> {
                         true
                     }
@@ -163,14 +167,14 @@ class PostsFragment : Fragment() {
                     Idle, EmptyLoading, Refreshing, is EmptyError, is NextPageError -> {
                         false
                     }
-                }
+                }*/
                 binding.swipeRefresh.isRefreshing = it.isRefreshing
 
                 binding.errorGroup.isVisible = it.isEmptyError
                 val errorText = it.emptyError?.getErrorText(requireContext())
                 binding.errorText.text = errorText
 
-                binding.progress.isVisible = it.isEmptyLoading
+                binding.progress.isVisible = it.isEmptyLoading //начальная загрузка
 
                 if (it.singleError != null) {
                     val singleErrorText = it.singleError.getErrorText(requireContext())
@@ -178,7 +182,7 @@ class PostsFragment : Fragment() {
                     viewModel.accept(PostMessage.HandleError)
                 }
 
-                adapter.submitList(it.posts)
+                adapter.submitList(PostPagingMapper.map(it))
             }
             .launchIn(viewLifecycleOwner.lifecycleScope)
 

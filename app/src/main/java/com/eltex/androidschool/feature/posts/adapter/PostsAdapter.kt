@@ -4,45 +4,89 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.eltex.androidschool.R
 import com.eltex.androidschool.databinding.CardPostBinding
+import com.eltex.androidschool.databinding.ItemErrorBinding
+import com.eltex.androidschool.databinding.ItemProgressBinding
+import com.eltex.androidschool.feature.posts.ui.PostPagingModel
 import com.eltex.androidschool.feature.posts.ui.PostUiModel
+import com.eltex.androidschool.ui.PagingModel
 
 class PostsAdapter(
     private val listener: PostListener,
-) : ListAdapter<PostUiModel, PostViewHolder>(PostDiffCallback()) {
+) : ListAdapter<PostPagingModel, RecyclerView.ViewHolder>(PostPagingDiffCallback()) {
 
     interface PostListener {
         fun onLikeClicked(post: PostUiModel)
         fun onShareClicked(post: PostUiModel)
         fun onDeleteClicked(post: PostUiModel)
         fun onEditClicked(post: PostUiModel)
+        //fun onRetryPageClicked()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
+    override fun getItemViewType(position: Int): Int = when (getItem(position)) {
+        is PagingModel.Data -> R.layout.card_post
+        is PagingModel.Error -> R.layout.item_error
+        PagingModel.Loading -> R.layout.item_progress
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            R.layout.card_post -> createPostViewHolder(parent)
+            R.layout.item_progress -> createProgressViewHolder(parent)
+            R.layout.item_error -> createErrorViewHolder(parent)
+            else -> error("Unknown viewType: $viewType")
+        }
+    }
+
+    private fun createProgressViewHolder(parent: ViewGroup): ProgressViewHolder {
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val binding = ItemProgressBinding.inflate(layoutInflater, parent, false)
+        return ProgressViewHolder(binding)
+    }
+
+    private fun createErrorViewHolder(parent: ViewGroup): ErrorViewHolder {
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val binding = ItemErrorBinding.inflate(layoutInflater, parent, false)
+        /*binding.retryButton.setOnClickListener {
+            listener.onRetryPageClicked()
+        }*/
+        return ErrorViewHolder(binding)
+    }
+
+    private fun createPostViewHolder(parent: ViewGroup): PostViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = CardPostBinding.inflate(layoutInflater, parent, false)
         val viewHolder = PostViewHolder(binding)
 
         binding.like.setOnClickListener {
-            listener.onLikeClicked(getItem(viewHolder.adapterPosition))
+            val item = getItem(viewHolder.adapterPosition) as? PagingModel.Data
+            item?.value?.let(listener::onLikeClicked)
         }
+
         binding.share.setOnClickListener {
-            listener.onShareClicked(getItem(viewHolder.adapterPosition))
+            val item = getItem(viewHolder.adapterPosition) as? PagingModel.Data
+            item?.value?.let(listener::onShareClicked)
         }
+
         binding.menu.setOnClickListener {
             PopupMenu(it.context, it).apply {
                 inflate(R.menu.action_menu)
-                setOnMenuItemClickListener { item ->
-                    when (item.itemId) {
+                setOnMenuItemClickListener { menuItem ->
+                    when (menuItem.itemId) {
                         R.id.delete -> {
-                            listener.onDeleteClicked(getItem(viewHolder.adapterPosition))
+                            val item = getItem(viewHolder.adapterPosition) as? PagingModel.Data
+                            item?.value?.let(listener::onDeleteClicked)
                             true
                         }
+
                         R.id.edit -> {
-                            listener.onEditClicked(getItem(viewHolder.adapterPosition))
+                            val item = getItem(viewHolder.adapterPosition) as? PagingModel.Data
+                            item?.value?.let(listener::onEditClicked)
                             true
                         }
+
                         else -> false
                     }
                 }
@@ -53,14 +97,14 @@ class PostsAdapter(
     }
 
     override fun onBindViewHolder(
-        holder: PostViewHolder,
+        holder: RecyclerView.ViewHolder,
         position: Int,
         payloads: List<Any>,
     ) {
         if (payloads.isNotEmpty()) {
             payloads.forEach {
                 if (it is PostPayload) {
-                    holder.bind(it)
+                    (holder as? PostViewHolder)?.bind(it)
                 }
             }
         } else {
@@ -68,7 +112,11 @@ class PostsAdapter(
         }
     }
 
-    override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-        holder.bind(getItem(position))
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (val item = getItem(position)) {
+            is PagingModel.Data -> (holder as PostViewHolder).bind(item.value)
+            is PagingModel.Error -> (holder as ErrorViewHolder).bind(item.reason)
+            else -> Unit
+        }
     }
 }

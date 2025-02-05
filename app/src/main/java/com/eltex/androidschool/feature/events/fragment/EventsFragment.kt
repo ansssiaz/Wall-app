@@ -176,7 +176,7 @@ class EventsFragment : Fragment() {
                 val errorText = it.emptyError?.getErrorText(requireContext())
                 binding.errorText.text = errorText
 
-                binding.progress.isVisible = it.isEmptyLoading
+                binding.progress.isVisible = it.isEmptyLoading //начальная загрузка
 
                 if (it.singleError != null) {
                     val singleErrorText = it.singleError.getErrorText(requireContext())
