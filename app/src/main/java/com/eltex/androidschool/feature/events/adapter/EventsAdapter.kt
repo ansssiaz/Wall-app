@@ -4,13 +4,19 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.eltex.androidschool.R
+import com.eltex.androidschool.adapter.ErrorViewHolder
 import com.eltex.androidschool.databinding.CardEventBinding
+import com.eltex.androidschool.databinding.EventSkeletonBinding
+import com.eltex.androidschool.databinding.ItemErrorBinding
+import com.eltex.androidschool.feature.events.ui.EventPagingModel
 import com.eltex.androidschool.feature.events.ui.EventUiModel
+import com.eltex.androidschool.ui.PagingModel
 
 class EventsAdapter(
     private val listener: EventListener,
-) : ListAdapter<EventUiModel, EventViewHolder>(EventDiffCallback()) {
+) : ListAdapter<EventPagingModel, RecyclerView.ViewHolder>(EventPagingDiffCallback()) {
 
     interface EventListener {
         fun onLikeClicked(event: EventUiModel)
@@ -20,32 +26,65 @@ class EventsAdapter(
         fun onEditClicked(event: EventUiModel)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
+    override fun getItemViewType(position: Int): Int = when (getItem(position)) {
+        is PagingModel.Data -> R.layout.card_event
+        is PagingModel.Error -> R.layout.item_error
+        PagingModel.EventSkeleton -> R.layout.event_skeleton
+        PagingModel.PostSkeleton -> 0
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            R.layout.card_event -> createEventViewHolder(parent)
+            R.layout.item_error -> createErrorViewHolder(parent)
+            R.layout.event_skeleton -> createEventSkeletonViewHolder(parent)
+            else -> error("Unknown viewType: $viewType")
+        }
+    }
+
+    private fun createEventSkeletonViewHolder(parent: ViewGroup): EventSkeletonViewHolder {
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val binding = EventSkeletonBinding.inflate(layoutInflater, parent, false)
+        return EventSkeletonViewHolder(binding)
+    }
+
+    private fun createErrorViewHolder(parent: ViewGroup): ErrorViewHolder {
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val binding = ItemErrorBinding.inflate(layoutInflater, parent, false)
+        return ErrorViewHolder(binding)
+    }
+
+    private fun createEventViewHolder(parent: ViewGroup): EventViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = CardEventBinding.inflate(layoutInflater, parent, false)
         val viewHolder = EventViewHolder(binding)
 
         binding.like.setOnClickListener {
-            listener.onLikeClicked(getItem(viewHolder.adapterPosition))
+            val item = getItem(viewHolder.adapterPosition) as? PagingModel.Data
+            item?.value?.let(listener::onLikeClicked)
         }
         binding.participate.setOnClickListener {
-            listener.onParticipateClicked(getItem(viewHolder.adapterPosition))
+            val item = getItem(viewHolder.adapterPosition) as? PagingModel.Data
+            item?.value?.let(listener::onParticipateClicked)
         }
         binding.share.setOnClickListener {
-            listener.onShareClicked(getItem(viewHolder.adapterPosition))
+            val item = getItem(viewHolder.adapterPosition) as? PagingModel.Data
+            item?.value?.let(listener::onShareClicked)
         }
         binding.menu.setOnClickListener {
             PopupMenu(it.context, it).apply {
                 inflate(R.menu.action_menu)
-                setOnMenuItemClickListener { item ->
-                    when (item.itemId) {
+                setOnMenuItemClickListener { menuItem ->
+                    when (menuItem.itemId) {
                         R.id.delete -> {
-                            listener.onDeleteClicked(getItem(viewHolder.adapterPosition))
+                            val item = getItem(viewHolder.adapterPosition) as? PagingModel.Data
+                            item?.value?.let(listener::onDeleteClicked)
                             true
                         }
 
                         R.id.edit -> {
-                            listener.onEditClicked(getItem(viewHolder.adapterPosition))
+                            val item = getItem(viewHolder.adapterPosition) as? PagingModel.Data
+                            item?.value?.let(listener::onEditClicked)
                             true
                         }
 
@@ -59,14 +98,14 @@ class EventsAdapter(
     }
 
     override fun onBindViewHolder(
-        holder: EventViewHolder,
+        holder: RecyclerView.ViewHolder,
         position: Int,
         payloads: List<Any>,
     ) {
         if (payloads.isNotEmpty()) {
             payloads.forEach {
                 if (it is EventPayload) {
-                    holder.bind(it)
+                    (holder as? EventViewHolder)?.bind(it)
                 }
             }
         } else {
@@ -74,7 +113,11 @@ class EventsAdapter(
         }
     }
 
-    override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-        holder.bind(getItem(position))
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (val item = getItem(position)) {
+            is PagingModel.Data -> (holder as EventViewHolder).bind(item.value)
+            is PagingModel.Error -> (holder as ErrorViewHolder).bind(item.reason)
+            else -> Unit
+        }
     }
 }

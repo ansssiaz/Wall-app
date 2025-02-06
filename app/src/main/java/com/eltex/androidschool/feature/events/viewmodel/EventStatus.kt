@@ -1,7 +1,7 @@
 package com.eltex.androidschool.feature.events.viewmodel
 
 sealed interface EventStatus {
-    data object Idle : EventStatus
+    class Idle(val loadingFinished: Boolean = false) : EventStatus
     data object NextPageLoading : EventStatus
     data object EmptyLoading : EventStatus
     data object Refreshing : EventStatus

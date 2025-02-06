@@ -1,15 +1,14 @@
 package com.eltex.androidschool.feature.events.fragment
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.eltex.androidschool.R
-import android.content.Intent
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -17,29 +16,29 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.eltex.androidschool.R
+import com.eltex.androidschool.databinding.FragmentEventsBinding
 import com.eltex.androidschool.feature.events.adapter.EventsAdapter
 import com.eltex.androidschool.feature.events.api.EventsApi
-import com.eltex.androidschool.databinding.FragmentEventsBinding
 import com.eltex.androidschool.feature.events.effecthandler.EventEffectHandler
 import com.eltex.androidschool.feature.events.reducer.EventReducer
-import com.eltex.androidschool.feature.newevent.fragment.NewEventFragment
-import com.eltex.androidschool.itemdecoration.EventDateDecoration
-import com.eltex.androidschool.itemdecoration.OffsetDecoration
-import com.eltex.androidschool.feature.events.ui.EventUiModelMapper
-import com.eltex.androidschool.feature.events.ui.EventUiModel
 import com.eltex.androidschool.feature.events.repository.NetworkEventRepository
+import com.eltex.androidschool.feature.events.ui.EventPagingMapper
+import com.eltex.androidschool.feature.events.ui.EventUiModel
+import com.eltex.androidschool.feature.events.ui.EventUiModelMapper
 import com.eltex.androidschool.feature.events.viewmodel.EventMessage
 import com.eltex.androidschool.feature.events.viewmodel.EventStore
 import com.eltex.androidschool.feature.events.viewmodel.EventUiState
-import com.eltex.androidschool.utils.getErrorText
 import com.eltex.androidschool.feature.events.viewmodel.EventViewModel
-import com.eltex.androidschool.feature.events.viewmodel.EventStatus.*
+import com.eltex.androidschool.feature.newevent.fragment.NewEventFragment
+import com.eltex.androidschool.itemdecoration.EventDateDecoration
+import com.eltex.androidschool.itemdecoration.OffsetDecoration
+import com.eltex.androidschool.utils.getErrorText
 import com.jakewharton.threetenabp.AndroidThreeTen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 class EventsFragment : Fragment() {
-    private var isLoading = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AndroidThreeTen.init(requireContext())
@@ -145,10 +144,7 @@ class EventsFragment : Fragment() {
                 override fun onChildViewAttachedToWindow(view: View) {
                     val itemsCount = adapter.itemCount
                     val adapterPosition = binding.list.getChildAdapterPosition(view)
-
-                    //Если пользователь доскроллил до середины списка, и данные сейчас не загружаются - загружаем следующую страницу
-                    if (adapterPosition >= itemsCount / 2 && adapterPosition < itemsCount - 2 && !isLoading) {
-                        isLoading = true
+                    if (itemsCount - 1 == adapterPosition) {
                         viewModel.accept(EventMessage.LoadNextPage)
                     }
                 }
@@ -160,23 +156,11 @@ class EventsFragment : Fragment() {
         viewModel.uiState
             .flowWithLifecycle(viewLifecycleOwner.lifecycle)
             .onEach {
-                isLoading = when (it.status) {
-                    NextPageLoading -> {
-                        true
-                    }
-
-                    Idle, EmptyLoading, Refreshing, is EmptyError, is NextPageError -> {
-                        false
-                    }
-                }
-
                 binding.swipeRefresh.isRefreshing = it.isRefreshing
 
                 binding.errorGroup.isVisible = it.isEmptyError
                 val errorText = it.emptyError?.getErrorText(requireContext())
                 binding.errorText.text = errorText
-
-                binding.progress.isVisible = it.isEmptyLoading //начальная загрузка
 
                 if (it.singleError != null) {
                     val singleErrorText = it.singleError.getErrorText(requireContext())
@@ -184,7 +168,7 @@ class EventsFragment : Fragment() {
                     viewModel.accept(EventMessage.HandleError)
                 }
 
-                adapter.submitList(it.events)
+                adapter.submitList(EventPagingMapper.map(it))
             }
             .launchIn(viewLifecycleOwner.lifecycleScope)
 

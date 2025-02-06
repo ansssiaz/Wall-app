@@ -39,7 +39,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 class PostsFragment : Fragment() {
-    //private var isLoading = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AndroidThreeTen.init(requireContext())
@@ -141,12 +140,6 @@ class PostsFragment : Fragment() {
                     val itemsCount = adapter.itemCount
                     val adapterPosition = binding.list.getChildAdapterPosition(view)
 
-                    //Если пользователь доскроллил до середины списка, и данные сейчас не загружаются - загружаем следующую страницу
-/*                    if (adapterPosition >= itemsCount / 2 && adapterPosition < itemsCount - 2 && !isLoading) {
-                        isLoading = true
-                        viewModel.accept(PostMessage.LoadNextPage)
-                    }*/
-
                     if (itemsCount - 1 == adapterPosition) {
                         viewModel.accept(PostMessage.LoadNextPage)
                     }
@@ -159,22 +152,11 @@ class PostsFragment : Fragment() {
         viewModel.uiState
             .flowWithLifecycle(viewLifecycleOwner.lifecycle)
             .onEach {
-/*                isLoading = when (it.status) {
-                    NextPageLoading -> {
-                        true
-                    }
-
-                    Idle, EmptyLoading, Refreshing, is EmptyError, is NextPageError -> {
-                        false
-                    }
-                }*/
                 binding.swipeRefresh.isRefreshing = it.isRefreshing
 
                 binding.errorGroup.isVisible = it.isEmptyError
                 val errorText = it.emptyError?.getErrorText(requireContext())
                 binding.errorText.text = errorText
-
-                binding.progress.isVisible = it.isEmptyLoading //начальная загрузка
 
                 if (it.singleError != null) {
                     val singleErrorText = it.singleError.getErrorText(requireContext())

@@ -1,4 +1,4 @@
-package com.eltex.androidschool.feature.posts.adapter
+package com.eltex.androidschool.adapter
 
 import androidx.recyclerview.widget.RecyclerView
 import com.eltex.androidschool.databinding.ItemErrorBinding

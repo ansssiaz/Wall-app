@@ -4,7 +4,7 @@ import com.eltex.androidschool.feature.events.ui.EventUiModel
 
 data class EventUiState(
     val events: List<EventUiModel> = emptyList(),
-    val status: EventStatus = EventStatus.Idle,
+    val status: EventStatus = EventStatus.Idle(),
     val singleError: Throwable? = null,
 ) {
     val isEmptyError: Boolean = status is EventStatus.EmptyError

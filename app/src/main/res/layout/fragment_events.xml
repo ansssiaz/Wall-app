@@ -23,15 +23,6 @@
             tools:listitem="@layout/card_event" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/errorText"
         android:layout_width="wrap_content"
@@ -58,7 +49,7 @@
         android:id="@+id/errorGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:visibility="gone"
-        app:constraint_referenced_ids="errorText,retryButton" />
+        app:constraint_referenced_ids="errorText,retryButton"
+        tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

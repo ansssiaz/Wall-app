@@ -6,7 +6,6 @@ import com.eltex.androidschool.feature.events.viewmodel.EventEffect
 import com.eltex.androidschool.feature.events.viewmodel.EventMessage
 import com.eltex.androidschool.feature.events.viewmodel.EventStatus
 import com.eltex.androidschool.feature.events.viewmodel.EventUiState
-
 import com.eltex.androidschool.mvi.Reducer
 import com.eltex.androidschool.mvi.ReducerResult
 
@@ -51,7 +50,7 @@ class EventReducer : Reducer<EventUiState, EventEffect, EventMessage> {
                 when (val messageResult = message.result) {
                     is Either.Left -> {
                         if (old.events.isNotEmpty()) {
-                            old.copy(singleError = messageResult.value, status = EventStatus.Idle)
+                            old.copy(singleError = messageResult.value, status = EventStatus.Idle())
                         } else {
                             old.copy(status = EventStatus.EmptyError(messageResult.value))
                         }
@@ -59,7 +58,7 @@ class EventReducer : Reducer<EventUiState, EventEffect, EventMessage> {
 
                     is Either.Right -> old.copy(
                         events = messageResult.value,
-                        status = EventStatus.Idle
+                        status = EventStatus.Idle()
                     )
                 }
             )
@@ -117,9 +116,21 @@ class EventReducer : Reducer<EventUiState, EventEffect, EventMessage> {
             }
 
             EventMessage.LoadNextPage -> {
+                val loadingFinished = (old.status as? EventStatus.Idle)?.loadingFinished == true
+                val effect = if (loadingFinished) {
+                    null
+                } else {
+                    EventEffect.LoadNextPage(old.events.last().id, PAGE_SIZE)
+                }
+
+                val status = if (loadingFinished) {
+                    old.status
+                } else {
+                    EventStatus.NextPageLoading
+                }
+
                 ReducerResult(
-                    old.copy(status = EventStatus.NextPageLoading),
-                    EventEffect.LoadNextPage(old.events.last().id, PAGE_SIZE),
+                    old.copy(status = status), effect,
                 )
             }
 
@@ -130,10 +141,14 @@ class EventReducer : Reducer<EventUiState, EventEffect, EventMessage> {
                             old.copy(status = EventStatus.NextPageError(message.result.value))
                         }
 
-                        is Either.Right -> old.copy(
-                            events = old.events + message.result.value,
-                            status = EventStatus.Idle,
-                        )
+                        is Either.Right -> {
+                            val eventUiModels = message.result.value
+                            val loadingFinished = eventUiModels.size < PAGE_SIZE
+                            old.copy(
+                                events = old.events + message.result.value,
+                                status = EventStatus.Idle(loadingFinished),
+                            )
+                        }
                     }
                 )
             }

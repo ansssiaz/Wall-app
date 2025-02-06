@@ -6,9 +6,10 @@ import android.widget.PopupMenu
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.eltex.androidschool.R
+import com.eltex.androidschool.adapter.ErrorViewHolder
 import com.eltex.androidschool.databinding.CardPostBinding
 import com.eltex.androidschool.databinding.ItemErrorBinding
-import com.eltex.androidschool.databinding.ItemProgressBinding
+import com.eltex.androidschool.databinding.PostSkeletonBinding
 import com.eltex.androidschool.feature.posts.ui.PostPagingModel
 import com.eltex.androidschool.feature.posts.ui.PostUiModel
 import com.eltex.androidschool.ui.PagingModel
@@ -22,36 +23,33 @@ class PostsAdapter(
         fun onShareClicked(post: PostUiModel)
         fun onDeleteClicked(post: PostUiModel)
         fun onEditClicked(post: PostUiModel)
-        //fun onRetryPageClicked()
     }
 
     override fun getItemViewType(position: Int): Int = when (getItem(position)) {
         is PagingModel.Data -> R.layout.card_post
         is PagingModel.Error -> R.layout.item_error
-        PagingModel.Loading -> R.layout.item_progress
+        PagingModel.PostSkeleton -> R.layout.post_skeleton
+        PagingModel.EventSkeleton -> 0
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             R.layout.card_post -> createPostViewHolder(parent)
-            R.layout.item_progress -> createProgressViewHolder(parent)
             R.layout.item_error -> createErrorViewHolder(parent)
+            R.layout.post_skeleton -> createPostSkeletonViewHolder(parent)
             else -> error("Unknown viewType: $viewType")
         }
     }
 
-    private fun createProgressViewHolder(parent: ViewGroup): ProgressViewHolder {
+    private fun createPostSkeletonViewHolder(parent: ViewGroup): PostSkeletonViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = ItemProgressBinding.inflate(layoutInflater, parent, false)
-        return ProgressViewHolder(binding)
+        val binding = PostSkeletonBinding.inflate(layoutInflater, parent, false)
+        return PostSkeletonViewHolder(binding)
     }
 
     private fun createErrorViewHolder(parent: ViewGroup): ErrorViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = ItemErrorBinding.inflate(layoutInflater, parent, false)
-        /*binding.retryButton.setOnClickListener {
-            listener.onRetryPageClicked()
-        }*/
         return ErrorViewHolder(binding)
     }
 

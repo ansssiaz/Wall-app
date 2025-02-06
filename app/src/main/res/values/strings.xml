@@ -31,4 +31,10 @@
     <string name="date_picker_title">Select a date</string>
     <string name="selected_date_hint">Selected date</string>
     <string name="select_date_button">Select a date</string>
+    <string name="post_skeleton_published_text" translatable="false">11.05.22 11:21</string>
+    <string name="post_skeleton_content_text" translatable="false">Listen, how do you feel about getting together with a big group and playing board games? I have some cool games, we can have a board game evening! Write me a PM or call</string>
+    <string name="post_skeleton_author_text" translatable="false">Lydia Westervelt</string>
+    <string name="event_skeleton_type_text" translatable="false">Offline</string>
+    <string name="event_skeleton_datetime_text" translatable="false">16.05.22 12:00</string>
+    <string name="event_skeleton_link_text" translatable="false">https://m2.material.io/components/cards</string>
 </resources>
