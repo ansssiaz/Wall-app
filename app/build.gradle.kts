@@ -89,4 +89,5 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     implementation(libs.arrow.core)
     implementation(libs.koleton)
+    implementation(libs.glide)
 }

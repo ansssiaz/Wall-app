@@ -13,6 +13,8 @@ data class Post(
     val content: String = "",
     @SerialName("author")
     val author: String = "",
+    @SerialName("authorAvatar")
+    val authorAvatar: String? = "",
     @SerialName("published")
     @Serializable(InstantSerializer::class)
     val published: Instant = Instant.now(),

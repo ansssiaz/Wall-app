@@ -4,6 +4,7 @@ adapterRxjava3 = "2.9.0"
 agp = "8.7.3"
 arrowCore = "2.0.1"
 desugar_jdk_libs = "2.1.4"
+glide = "4.16.0"
 koleton = "1.0.0-beta01"
 kotlin = "2.1.0"
 coreKtx = "1.15.0"
@@ -36,6 +37,7 @@ androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fr
 androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigationVersion" }
 arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrowCore" }
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
