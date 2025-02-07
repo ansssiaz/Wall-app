@@ -1,27 +1,24 @@
 package com.eltex.androidschool.feature.newevent.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.fragment.findNavController
 import com.eltex.androidschool.R
-import com.eltex.androidschool.feature.events.api.EventsApi
 import com.eltex.androidschool.databinding.FragmentNewEventBinding
-import com.eltex.androidschool.feature.posts.ui.PostUiModelMapper.Companion.FORMATTER
-import com.eltex.androidschool.feature.events.repository.NetworkEventRepository
-import com.eltex.androidschool.utils.getErrorText
+import com.eltex.androidschool.di.DependencyContainerProvider
 import com.eltex.androidschool.feature.newevent.viewmodel.NewEventViewModel
+import com.eltex.androidschool.feature.posts.ui.PostUiModelMapper.Companion.FORMATTER
 import com.eltex.androidschool.feature.toolbar.viewmodel.ToolbarViewModel
+import com.eltex.androidschool.utils.getErrorText
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
@@ -130,14 +127,8 @@ class NewEventFragment : Fragment() {
         }
 
         val viewModel by viewModels<NewEventViewModel> {
-            viewModelFactory {
-                initializer {
-                    NewEventViewModel(
-                        repository = NetworkEventRepository(EventsApi.INSTANCE),
-                        id = id,
-                    )
-                }
-            }
+            (requireContext().applicationContext as DependencyContainerProvider).getContainer()
+                .getNewEventViewModelFactory(id)
         }
 
         val toolbarViewModel by activityViewModels<ToolbarViewModel>()

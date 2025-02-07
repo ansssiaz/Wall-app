@@ -12,23 +12,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.eltex.androidschool.R
 import com.eltex.androidschool.databinding.FragmentEventsBinding
+import com.eltex.androidschool.di.DependencyContainerProvider
 import com.eltex.androidschool.feature.events.adapter.EventsAdapter
-import com.eltex.androidschool.feature.events.api.EventsApi
-import com.eltex.androidschool.feature.events.effecthandler.EventEffectHandler
-import com.eltex.androidschool.feature.events.reducer.EventReducer
-import com.eltex.androidschool.feature.events.repository.NetworkEventRepository
 import com.eltex.androidschool.feature.events.ui.EventPagingMapper
 import com.eltex.androidschool.feature.events.ui.EventUiModel
-import com.eltex.androidschool.feature.events.ui.EventUiModelMapper
 import com.eltex.androidschool.feature.events.viewmodel.EventMessage
-import com.eltex.androidschool.feature.events.viewmodel.EventStore
-import com.eltex.androidschool.feature.events.viewmodel.EventUiState
 import com.eltex.androidschool.feature.events.viewmodel.EventViewModel
 import com.eltex.androidschool.feature.newevent.fragment.NewEventFragment
 import com.eltex.androidschool.itemdecoration.EventDateDecoration
@@ -51,21 +43,8 @@ class EventsFragment : Fragment() {
     ): View {
         val binding = FragmentEventsBinding.inflate(inflater, container, false)
         val viewModel by viewModels<EventViewModel> {
-            viewModelFactory {
-                initializer {
-                    EventViewModel(
-                        EventStore(
-                            EventReducer(),
-                            EventEffectHandler(
-                                NetworkEventRepository(EventsApi.INSTANCE),
-                                EventUiModelMapper()
-                            ),
-                            setOf(EventMessage.Refresh),
-                            EventUiState(),
-                        )
-                    )
-                }
-            }
+            (requireContext().applicationContext as DependencyContainerProvider).getContainer()
+                .getEventViewModelFactory()
         }
         val adapter = EventsAdapter(
             object : EventsAdapter.EventListener {

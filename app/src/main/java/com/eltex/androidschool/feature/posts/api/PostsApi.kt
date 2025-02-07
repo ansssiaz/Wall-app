@@ -1,8 +1,6 @@
 package com.eltex.androidschool.feature.posts.api
 
-import com.eltex.androidschool.api.RetrofitFactory
 import com.eltex.androidschool.feature.posts.data.Post
-import retrofit2.create
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -28,10 +26,4 @@ interface PostsApi {
 
     @DELETE("api/posts/{id}")
     suspend fun delete(@Path("id") id: Long)
-
-    companion object {
-        val INSTANCE: PostsApi by lazy {
-            RetrofitFactory.INSTANCE.create()
-        }
-    }
 }

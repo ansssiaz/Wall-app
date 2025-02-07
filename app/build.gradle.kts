@@ -3,8 +3,9 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    kotlin("plugin.serialization") version "2.1.10"
-    id("com.google.devtools.ksp") version "2.1.0-1.0.29"
+    alias(libs.plugins.serialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -55,7 +56,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -90,4 +90,7 @@ dependencies {
     implementation(libs.arrow.core)
     implementation(libs.koleton)
     implementation(libs.glide)
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
 }

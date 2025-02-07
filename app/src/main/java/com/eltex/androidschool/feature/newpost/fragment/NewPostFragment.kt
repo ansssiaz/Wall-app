@@ -1,30 +1,26 @@
 package com.eltex.androidschool.feature.newpost.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.fragment.findNavController
 import com.eltex.androidschool.R
 import com.eltex.androidschool.databinding.FragmentNewPostBinding
-import com.eltex.androidschool.feature.posts.repository.NetworkPostRepository
-import com.eltex.androidschool.utils.getErrorText
+import com.eltex.androidschool.di.DependencyContainerProvider
 import com.eltex.androidschool.feature.newpost.viewmodel.NewPostViewModel
-import com.eltex.androidschool.feature.posts.api.PostsApi
 import com.eltex.androidschool.feature.toolbar.viewmodel.ToolbarViewModel
+import com.eltex.androidschool.utils.getErrorText
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-
 
 class NewPostFragment : Fragment() {
     companion object {
@@ -65,16 +61,8 @@ class NewPostFragment : Fragment() {
             if (id != 0L) getString(R.string.edit_post) else getString(R.string.new_post)
 
         val viewModel by viewModels<NewPostViewModel> {
-            viewModelFactory {
-                initializer {
-                    NewPostViewModel(
-                        repository = NetworkPostRepository(
-                            PostsApi.INSTANCE
-                        ),
-                        id = id,
-                    )
-                }
-            }
+            (requireContext().applicationContext as DependencyContainerProvider).getContainer()
+                .getNewPostViewModelFactory(id)
         }
 
         val toolbarViewModel by activityViewModels<ToolbarViewModel>()

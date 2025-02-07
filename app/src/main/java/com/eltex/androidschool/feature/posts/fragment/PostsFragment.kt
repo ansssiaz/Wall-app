@@ -12,24 +12,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.eltex.androidschool.R
 import com.eltex.androidschool.databinding.FragmentPostsBinding
+import com.eltex.androidschool.di.DependencyContainerProvider
 import com.eltex.androidschool.feature.newpost.fragment.NewPostFragment
 import com.eltex.androidschool.feature.posts.adapter.PostsAdapter
-import com.eltex.androidschool.feature.posts.api.PostsApi
-import com.eltex.androidschool.feature.posts.effecthandler.PostEffectHandler
-import com.eltex.androidschool.feature.posts.reducer.PostReducer
-import com.eltex.androidschool.feature.posts.repository.NetworkPostRepository
 import com.eltex.androidschool.feature.posts.ui.PostPagingMapper
 import com.eltex.androidschool.feature.posts.ui.PostUiModel
-import com.eltex.androidschool.feature.posts.ui.PostUiModelMapper
 import com.eltex.androidschool.feature.posts.viewmodel.PostMessage
-import com.eltex.androidschool.feature.posts.viewmodel.PostStore
-import com.eltex.androidschool.feature.posts.viewmodel.PostUiState
 import com.eltex.androidschool.feature.posts.viewmodel.PostViewModel
 import com.eltex.androidschool.itemdecoration.OffsetDecoration
 import com.eltex.androidschool.itemdecoration.PostDateDecoration
@@ -51,21 +43,7 @@ class PostsFragment : Fragment() {
     ): View {
         val binding = FragmentPostsBinding.inflate(inflater, container, false)
         val viewModel by viewModels<PostViewModel> {
-            viewModelFactory {
-                initializer {
-                    PostViewModel(
-                        PostStore(
-                            PostReducer(),
-                            PostEffectHandler(
-                                NetworkPostRepository(PostsApi.INSTANCE),
-                                PostUiModelMapper()
-                            ),
-                            setOf(PostMessage.Refresh),
-                            PostUiState(),
-                        )
-                    )
-                }
-            }
+            (requireContext().applicationContext as DependencyContainerProvider).getContainer().getPostViewModelFactory()
         }
         val adapter = PostsAdapter(
             object : PostsAdapter.PostListener {
