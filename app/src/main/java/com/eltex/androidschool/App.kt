@@ -1,14 +1,7 @@
 package com.eltex.androidschool
 
 import android.app.Application
-import com.eltex.androidschool.di.DependencyContainer
-import com.eltex.androidschool.di.DependencyContainerImpl
-import com.eltex.androidschool.di.DependencyContainerProvider
+import dagger.hilt.android.HiltAndroidApp
 
-class App: Application(), DependencyContainerProvider {
-    private val container by lazy {
-        DependencyContainerImpl()
-    }
-
-    override fun getContainer(): DependencyContainer = container
-}
+@HiltAndroidApp
+class App: Application()

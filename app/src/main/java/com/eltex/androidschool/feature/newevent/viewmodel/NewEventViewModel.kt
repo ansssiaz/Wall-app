@@ -4,15 +4,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eltex.androidschool.utils.Status
 import com.eltex.androidschool.feature.events.repository.EventRepository
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.threeten.bp.Instant
 
-class NewEventViewModel(
+@HiltViewModel(assistedFactory = NewEventViewModel.ViewModelFactory::class)
+class NewEventViewModel @AssistedInject constructor(
     private val repository: EventRepository,
-    private val id: Long = 0,
+    @Assisted private val id: Long = 0,
 ) : ViewModel() {
     private val _state = MutableStateFlow(NewEventUiState())
     val state = _state.asStateFlow()
@@ -34,5 +39,10 @@ class NewEventViewModel(
 
     fun consumeError() {
         _state.update { it.copy(status = Status.Idle) }
+    }
+
+    @AssistedFactory
+    interface ViewModelFactory {
+        fun create(id: Long): NewEventViewModel
     }
 }

@@ -3,9 +3,10 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.serialization)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
+    kotlin("plugin.serialization") version "2.1.10"
+    id("com.google.dagger.hilt.android")
+    id("com.google.devtools.ksp")
+
 }
 
 android {
@@ -92,5 +93,6 @@ dependencies {
     implementation(libs.glide)
 
     implementation(libs.hilt.android)
-    ksp(libs.hilt.android.compiler)
+    ksp(libs.google.dagger.compiler)
+    ksp(libs.dagger.hilt.compiler)
 }

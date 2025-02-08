@@ -2,10 +2,13 @@ package com.eltex.androidschool.feature.events.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-data class EventViewModel(
+@HiltViewModel
+data class EventViewModel @Inject constructor(
     private val store: EventStore,
 ) : ViewModel() {
     val uiState: StateFlow<EventUiState> = store.state

@@ -2,8 +2,9 @@ package com.eltex.androidschool.feature.posts.repository
 
 import com.eltex.androidschool.feature.posts.api.PostsApi
 import com.eltex.androidschool.feature.posts.data.Post
+import javax.inject.Inject
 
-class NetworkPostRepository (private val api: PostsApi) :
+class NetworkPostRepository @Inject constructor (private val api: PostsApi) :
     PostRepository {
     override suspend fun savePost(id: Long, content: String): Post {
         return api.save(

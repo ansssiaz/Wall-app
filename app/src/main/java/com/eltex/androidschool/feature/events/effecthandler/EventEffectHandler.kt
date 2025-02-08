@@ -5,6 +5,7 @@ import arrow.core.left
 import arrow.core.right
 import com.eltex.androidschool.feature.events.model.EventWithError
 import com.eltex.androidschool.feature.events.repository.EventRepository
+import com.eltex.androidschool.feature.events.repository.NetworkEventRepository
 import com.eltex.androidschool.feature.events.ui.EventUiModelMapper
 import com.eltex.androidschool.feature.events.viewmodel.EventEffect
 import com.eltex.androidschool.feature.events.viewmodel.EventMessage
@@ -15,10 +16,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.merge
+import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class EventEffectHandler(
+class EventEffectHandler @Inject constructor (
     private val repository: EventRepository,
     private val mapper: EventUiModelMapper,
 ) : EffectHandler<EventEffect, EventMessage> {

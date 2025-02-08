@@ -14,14 +14,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.eltex.androidschool.R
 import com.eltex.androidschool.databinding.FragmentNewPostBinding
-import com.eltex.androidschool.di.DependencyContainerProvider
 import com.eltex.androidschool.feature.newpost.viewmodel.NewPostViewModel
 import com.eltex.androidschool.feature.toolbar.viewmodel.ToolbarViewModel
 import com.eltex.androidschool.utils.getErrorText
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.lifecycle.withCreationCallback
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 class NewPostFragment : Fragment() {
     companion object {
         const val ARG_POST_ID = "ARG_POST_ID"
@@ -60,10 +62,17 @@ class NewPostFragment : Fragment() {
         val title =
             if (id != 0L) getString(R.string.edit_post) else getString(R.string.new_post)
 
-        val viewModel by viewModels<NewPostViewModel> {
-            (requireContext().applicationContext as DependencyContainerProvider).getContainer()
-                .getNewPostViewModelFactory(id)
-        }
+        val viewModel by viewModels<NewPostViewModel>(
+            extrasProducer = {
+                defaultViewModelCreationExtras
+                    .withCreationCallback<NewPostViewModel.ViewModelFactory> { factory ->
+                    factory.create(
+                        id
+                    )
+                }
+
+            }
+        )
 
         val toolbarViewModel by activityViewModels<ToolbarViewModel>()
         toolbarViewModel.setTitle(title)

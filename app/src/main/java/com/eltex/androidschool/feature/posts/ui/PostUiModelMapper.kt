@@ -3,8 +3,9 @@ package com.eltex.androidschool.feature.posts.ui
 import com.eltex.androidschool.feature.posts.data.Post
 import org.threeten.bp.ZoneId.systemDefault
 import org.threeten.bp.format.DateTimeFormatter
+import javax.inject.Inject
 
-class PostUiModelMapper {
+class PostUiModelMapper @Inject constructor(){
     companion object {
         val FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm")
     }

@@ -8,8 +8,9 @@ import com.eltex.androidschool.feature.posts.viewmodel.PostStatus
 import com.eltex.androidschool.feature.posts.viewmodel.PostUiState
 import com.eltex.androidschool.mvi.Reducer
 import com.eltex.androidschool.mvi.ReducerResult
+import javax.inject.Inject
 
-class PostReducer : Reducer<PostUiState, PostEffect, PostMessage> {
+class PostReducer @Inject constructor(): Reducer<PostUiState, PostEffect, PostMessage> {
     private companion object {
         const val PAGE_SIZE = 10
 

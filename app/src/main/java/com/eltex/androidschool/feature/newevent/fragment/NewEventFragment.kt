@@ -14,7 +14,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.eltex.androidschool.R
 import com.eltex.androidschool.databinding.FragmentNewEventBinding
-import com.eltex.androidschool.di.DependencyContainerProvider
 import com.eltex.androidschool.feature.newevent.viewmodel.NewEventViewModel
 import com.eltex.androidschool.feature.posts.ui.PostUiModelMapper.Companion.FORMATTER
 import com.eltex.androidschool.feature.toolbar.viewmodel.ToolbarViewModel
@@ -22,6 +21,8 @@ import com.eltex.androidschool.utils.getErrorText
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.lifecycle.withCreationCallback
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -31,6 +32,7 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import org.threeten.bp.ZoneId.systemDefault
 
+@AndroidEntryPoint
 class NewEventFragment : Fragment() {
     companion object {
         const val ARG_EVENT_ID = "ARG_EVENT_ID"
@@ -126,10 +128,16 @@ class NewEventFragment : Fragment() {
             datePicker?.show(parentFragmentManager, "DATE_PICKER")
         }
 
-        val viewModel by viewModels<NewEventViewModel> {
-            (requireContext().applicationContext as DependencyContainerProvider).getContainer()
-                .getNewEventViewModelFactory(id)
-        }
+        val viewModel by viewModels<NewEventViewModel>(
+            extrasProducer = {
+                defaultViewModelCreationExtras
+                    .withCreationCallback<NewEventViewModel.ViewModelFactory> { factory ->
+                    factory.create(
+                        id
+                    )
+                }
+            }
+        )
 
         val toolbarViewModel by activityViewModels<ToolbarViewModel>()
         toolbarViewModel.setTitle(getString(title))

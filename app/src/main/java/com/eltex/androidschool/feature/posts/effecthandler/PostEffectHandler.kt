@@ -4,6 +4,7 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import com.eltex.androidschool.feature.posts.model.PostWithError
+import com.eltex.androidschool.feature.posts.repository.NetworkPostRepository
 import com.eltex.androidschool.feature.posts.repository.PostRepository
 import com.eltex.androidschool.feature.posts.ui.PostUiModelMapper
 import com.eltex.androidschool.feature.posts.viewmodel.PostEffect
@@ -14,10 +15,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.merge
+import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class PostEffectHandler(
+class PostEffectHandler @Inject constructor(
     private val repository: PostRepository,
     private val mapper: PostUiModelMapper,
 ) : EffectHandler<PostEffect, PostMessage> {

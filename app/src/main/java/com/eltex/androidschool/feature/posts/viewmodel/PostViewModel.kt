@@ -2,10 +2,13 @@ package com.eltex.androidschool.feature.posts.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-data class PostViewModel(
+@HiltViewModel
+data class PostViewModel @Inject constructor(
     private val store: PostStore,
 ) : ViewModel() {
     val uiState: StateFlow<PostUiState> = store.state

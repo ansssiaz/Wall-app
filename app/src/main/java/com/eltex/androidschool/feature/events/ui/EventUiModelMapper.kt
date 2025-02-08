@@ -3,8 +3,9 @@ package com.eltex.androidschool.feature.events.ui
 import com.eltex.androidschool.feature.posts.ui.PostUiModelMapper.Companion.FORMATTER
 import com.eltex.androidschool.feature.events.data.Event
 import org.threeten.bp.ZoneId.systemDefault
+import javax.inject.Inject
 
-class EventUiModelMapper {
+class EventUiModelMapper @Inject constructor() {
     fun map(event: Event): EventUiModel = with(event) {
         EventUiModel(
             id = id,
@@ -18,7 +19,7 @@ class EventUiModelMapper {
             likedByMe = likedByMe,
             participatedByMe = participatedByMe,
             link = link,
-            likes =likeOwnerIds.size,
+            likes = likeOwnerIds.size,
             participants = participantsIds.size
         )
     }

@@ -16,7 +16,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.eltex.androidschool.R
 import com.eltex.androidschool.databinding.FragmentPostsBinding
-import com.eltex.androidschool.di.DependencyContainerProvider
 import com.eltex.androidschool.feature.newpost.fragment.NewPostFragment
 import com.eltex.androidschool.feature.posts.adapter.PostsAdapter
 import com.eltex.androidschool.feature.posts.ui.PostPagingMapper
@@ -27,9 +26,11 @@ import com.eltex.androidschool.itemdecoration.OffsetDecoration
 import com.eltex.androidschool.itemdecoration.PostDateDecoration
 import com.eltex.androidschool.utils.getErrorText
 import com.jakewharton.threetenabp.AndroidThreeTen
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 class PostsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,9 +43,9 @@ class PostsFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         val binding = FragmentPostsBinding.inflate(inflater, container, false)
-        val viewModel by viewModels<PostViewModel> {
-            (requireContext().applicationContext as DependencyContainerProvider).getContainer().getPostViewModelFactory()
-        }
+
+        val viewModel by viewModels<PostViewModel>()
+
         val adapter = PostsAdapter(
             object : PostsAdapter.PostListener {
                 override fun onLikeClicked(post: PostUiModel) {

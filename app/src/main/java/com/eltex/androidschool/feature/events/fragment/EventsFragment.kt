@@ -16,7 +16,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.eltex.androidschool.R
 import com.eltex.androidschool.databinding.FragmentEventsBinding
-import com.eltex.androidschool.di.DependencyContainerProvider
 import com.eltex.androidschool.feature.events.adapter.EventsAdapter
 import com.eltex.androidschool.feature.events.ui.EventPagingMapper
 import com.eltex.androidschool.feature.events.ui.EventUiModel
@@ -27,9 +26,11 @@ import com.eltex.androidschool.itemdecoration.EventDateDecoration
 import com.eltex.androidschool.itemdecoration.OffsetDecoration
 import com.eltex.androidschool.utils.getErrorText
 import com.jakewharton.threetenabp.AndroidThreeTen
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 class EventsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,10 +43,9 @@ class EventsFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         val binding = FragmentEventsBinding.inflate(inflater, container, false)
-        val viewModel by viewModels<EventViewModel> {
-            (requireContext().applicationContext as DependencyContainerProvider).getContainer()
-                .getEventViewModelFactory()
-        }
+
+        val viewModel by viewModels<EventViewModel>()
+
         val adapter = EventsAdapter(
             object : EventsAdapter.EventListener {
                 override fun onLikeClicked(event: EventUiModel) {

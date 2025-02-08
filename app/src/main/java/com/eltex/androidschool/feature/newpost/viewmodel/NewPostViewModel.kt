@@ -4,14 +4,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eltex.androidschool.feature.posts.repository.PostRepository
 import com.eltex.androidschool.utils.Status
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class NewPostViewModel(
+@HiltViewModel(assistedFactory = NewPostViewModel.ViewModelFactory::class)
+class NewPostViewModel @AssistedInject constructor(
     private val repository: PostRepository,
-    private val id: Long = 0,
+    @Assisted private val id: Long = 0,
 ) : ViewModel() {
     private val _state = MutableStateFlow(NewPostUiState())
     val state = _state.asStateFlow()
@@ -33,5 +38,10 @@ class NewPostViewModel(
 
     fun consumeError() {
         _state.update { it.copy(status = Status.Idle) }
+    }
+
+    @AssistedFactory
+    interface ViewModelFactory{
+        fun create(id: Long): NewPostViewModel
     }
 }

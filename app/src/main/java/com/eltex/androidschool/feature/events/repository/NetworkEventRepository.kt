@@ -3,8 +3,9 @@ package com.eltex.androidschool.feature.events.repository
 import com.eltex.androidschool.feature.events.api.EventsApi
 import com.eltex.androidschool.feature.events.data.Event
 import org.threeten.bp.Instant
+import javax.inject.Inject
 
-class NetworkEventRepository(private val api: EventsApi) : EventRepository {
+class NetworkEventRepository @Inject constructor(private val api: EventsApi) : EventRepository {
 
     override suspend fun saveEvent(id: Long, content: String, datetime: Instant): Event = api.save(
         Event(
