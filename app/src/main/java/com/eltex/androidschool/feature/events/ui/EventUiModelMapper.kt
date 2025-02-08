@@ -1,11 +1,10 @@
 package com.eltex.androidschool.feature.events.ui
 
-import com.eltex.androidschool.feature.posts.ui.PostUiModelMapper.Companion.FORMATTER
 import com.eltex.androidschool.feature.events.data.Event
-import org.threeten.bp.ZoneId.systemDefault
+import com.eltex.androidschool.utils.DateFormatter
 import javax.inject.Inject
 
-class EventUiModelMapper @Inject constructor() {
+class EventUiModelMapper @Inject constructor(private val dateFormatter: DateFormatter) {
     fun map(event: Event): EventUiModel = with(event) {
         EventUiModel(
             id = id,
@@ -13,8 +12,8 @@ class EventUiModelMapper @Inject constructor() {
             author = author,
             authorAvatar = authorAvatar,
             content = content,
-            published = FORMATTER.format(published.atZone(systemDefault())),
-            datetime = FORMATTER.format(datetime.atZone(systemDefault())),
+            published = dateFormatter.formatDate(published),
+            datetime = dateFormatter.formatDate(datetime),
             type = type,
             likedByMe = likedByMe,
             participatedByMe = participatedByMe,

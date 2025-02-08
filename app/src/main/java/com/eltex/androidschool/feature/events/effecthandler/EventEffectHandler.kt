@@ -5,7 +5,6 @@ import arrow.core.left
 import arrow.core.right
 import com.eltex.androidschool.feature.events.model.EventWithError
 import com.eltex.androidschool.feature.events.repository.EventRepository
-import com.eltex.androidschool.feature.events.repository.NetworkEventRepository
 import com.eltex.androidschool.feature.events.ui.EventUiModelMapper
 import com.eltex.androidschool.feature.events.viewmodel.EventEffect
 import com.eltex.androidschool.feature.events.viewmodel.EventMessage

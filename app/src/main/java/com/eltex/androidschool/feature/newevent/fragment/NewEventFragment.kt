@@ -15,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import com.eltex.androidschool.R
 import com.eltex.androidschool.databinding.FragmentNewEventBinding
 import com.eltex.androidschool.feature.newevent.viewmodel.NewEventViewModel
-import com.eltex.androidschool.feature.posts.ui.PostUiModelMapper.Companion.FORMATTER
 import com.eltex.androidschool.feature.toolbar.viewmodel.ToolbarViewModel
 import com.eltex.androidschool.utils.getErrorText
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -31,6 +30,8 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import org.threeten.bp.ZoneId.systemDefault
+import org.threeten.bp.format.DateTimeFormatter
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class NewEventFragment : Fragment() {
@@ -40,6 +41,9 @@ class NewEventFragment : Fragment() {
         const val ARG_DATETIME = "ARG_DATETIME"
         const val EVENT_CREATED_RESULT = "EVENT_CREATED_RESULT"
     }
+
+    @Inject
+    lateinit var formatter: DateTimeFormatter
 
     private val toolbarViewModel by activityViewModels<ToolbarViewModel>()
     override fun onStart() {
@@ -73,11 +77,11 @@ class NewEventFragment : Fragment() {
 
         var datetime =
             if (id != 0L) // Если не выбраны дата и время события, то по умолчанию установим указанные раньше (при редактировании) или текущие (при создании)
-                LocalDateTime.parse(arguments?.getString(ARG_DATETIME), FORMATTER)
+                LocalDateTime.parse(arguments?.getString(ARG_DATETIME), formatter)
                     .atZone(systemDefault()).toInstant()
             else Instant.now()
 
-        var formattedDatetime = FORMATTER.format(LocalDateTime.now().atZone(systemDefault()))
+        var formattedDatetime = formatter.format(LocalDateTime.now().atZone(systemDefault()))
 
         binding.editTextDate.setText(arguments?.getString(ARG_DATETIME) ?: formattedDatetime)
 
@@ -112,7 +116,7 @@ class NewEventFragment : Fragment() {
                         datetime =
                             selectedDate?.atTime(selectedTime)?.atZone(systemDefault())?.toInstant()
 
-                        formattedDatetime = FORMATTER.format(datetime?.atZone(systemDefault()))
+                        formattedDatetime = formatter.format(datetime?.atZone(systemDefault()))
                         binding.editTextDate.setText(formattedDatetime)
                     }
                 }

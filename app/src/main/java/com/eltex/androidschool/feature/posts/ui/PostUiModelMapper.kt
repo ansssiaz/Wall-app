@@ -1,14 +1,10 @@
 package com.eltex.androidschool.feature.posts.ui
 
 import com.eltex.androidschool.feature.posts.data.Post
-import org.threeten.bp.ZoneId.systemDefault
-import org.threeten.bp.format.DateTimeFormatter
+import com.eltex.androidschool.utils.DateFormatter
 import javax.inject.Inject
 
-class PostUiModelMapper @Inject constructor(){
-    companion object {
-        val FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm")
-    }
+class PostUiModelMapper @Inject constructor(private val dateFormatter: DateFormatter){
 
     fun map(post: Post): PostUiModel = with(post) {
         PostUiModel(
@@ -16,7 +12,7 @@ class PostUiModelMapper @Inject constructor(){
             content = content,
             author = author,
             authorAvatar = authorAvatar,
-            published = FORMATTER.format(published.atZone(systemDefault())),
+            published = dateFormatter.formatDate(published),
             likedByMe = likedByMe,
             likes = likeOwnerIds.size,
         )

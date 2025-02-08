@@ -4,7 +4,6 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import com.eltex.androidschool.feature.posts.model.PostWithError
-import com.eltex.androidschool.feature.posts.repository.NetworkPostRepository
 import com.eltex.androidschool.feature.posts.repository.PostRepository
 import com.eltex.androidschool.feature.posts.ui.PostUiModelMapper
 import com.eltex.androidschool.feature.posts.viewmodel.PostEffect
