@@ -18,10 +18,10 @@ Cоциальная сеть для публикации постов и соб�
 ## Функции приложения
 - Просмотр ленты постов/событий с пагинацией
 - Добавление нового поста/события
-<p float="left" align="center">
+
 <img alt="screenshot" width="30%" src="https://github.com/user-attachments/assets/c2c028e4-cdf6-49cb-838b-5ace56745086"/>
 <img alt="screenshot" width="30%" src="https://github.com/user-attachments/assets/f4f8c3a5-41b8-4be3-a3dd-6c1a2bd9efb1"/>
-</p>
+
 - Редактирование поста/события
 <p>
 <img alt="screenshot" width="30%" src="https://github.com/user-attachments/assets/edd7bbc5-3cb6-4498-bdde-2d7acae956f9"/>
