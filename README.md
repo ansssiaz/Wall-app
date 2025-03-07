@@ -1,5 +1,5 @@
-<p align="center"> 
-Мобильное приложение - социальная сеть для публикации постов и событий и выполнения CRUD-операций над ними. 
+<p> 
+Cоциальная сеть для публикации постов и событий и выполнения CRUD-операций над ними. 
 </p>
 
 </br>
@@ -13,5 +13,14 @@
 <img alt="screenshot" width="30%" src="https://github.com/user-attachments/assets/c1e2c00a-0b59-424a-bb07-83018ec8d1e6"/>
 <img alt="screenshot" width="30%" src="https://github.com/user-attachments/assets/edd7bbc5-3cb6-4498-bdde-2d7acae956f9"/>
 </p>
-
-Приложение построено на архитектуре MVVM, реализованы паттерны Builder, Singletone, Observer, Adapter. Для работы с сетью используется Retrofit2. Реализован подход Single-Activity с помощью библиотеки Android Navigation.
+##Особенности архитектуры
+-MVVM
+-Single Activity
+## Библиотеки и технологии
+-Навигация между экранами с помощью Android Navigation
+-RecyclerView для списка постов и событий
+-ThreeTen для для работы с датой и временем
+-Glide для работы с изображениями
+-Okhttp3 и Retrofit2 для работы с сетью
+-Coroutines для асинхронных операций
+-Dagger Hilt для внедрения зависимостей
