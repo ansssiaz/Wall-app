@@ -4,20 +4,16 @@
 Cоциальная сеть для публикации постов и событий и выполнения действий с ними. 
 </p>
 Проект был выполнен во время обучения на курсе в школе Eltex.
-<p float="left" align="center">
-<img alt="screenshot" width="30%" src="https://github.com/user-attachments/assets/4c611391-3699-4907-a250-0f8b35e3dcdc"/>
-</p>
-
 </br>
-
-## Функции приложения
-- Просмотр ленты постов/событий с пагинацией
 <p float="left" align="center">
 <img alt="screenshot" width="30%" src="https://github.com/user-attachments/assets/4c611391-3699-4907-a250-0f8b35e3dcdc"/>
 <img alt="screenshot" width="30%" src="https://github.com/user-attachments/assets/e4708851-3e58-40df-b71f-cdd35120e618"/>
 <img alt="screenshot" width="30%" src="https://github.com/user-attachments/assets/e9af64e4-485c-417f-9a0f-090188937b69"/>
+<img alt="screenshot" width="30%" src="https://github.com/user-attachments/assets/4c611391-3699-4907-a250-0f8b35e3dcdc"/>
 </p>
 
+## Функции приложения
+- Просмотр ленты постов/событий с пагинацией
 - Добавление нового поста/события
 - Редактирование поста/события
 <p>
