@@ -2,9 +2,8 @@
 
 <p align="center">
 Cоциальная сеть для публикации постов и событий и выполнения действий с ними. 
-
-Проект был выполнен во время обучения на курсе в школе Eltex.
 </p>
+Проект был выполнен во время обучения на курсе в школе Eltex.
 <p float="left" align="center">
 <img alt="screenshot" width="30%" src="https://github.com/user-attachments/assets/4c611391-3699-4907-a250-0f8b35e3dcdc"/>
 </p>
@@ -18,12 +17,8 @@ Cоциальная сеть для публикации постов и соб�
 <img alt="screenshot" width="30%" src="https://github.com/user-attachments/assets/e4708851-3e58-40df-b71f-cdd35120e618"/>
 <img alt="screenshot" width="30%" src="https://github.com/user-attachments/assets/e9af64e4-485c-417f-9a0f-090188937b69"/>
 </p>
-- Добавление нового поста/события
-<p float="left" align="center">
-<img alt="screenshot" width="30%" src="https://github.com/user-attachments/assets/679a83a1-ecfc-4fa0-b8d9-02e65556da32"/>
-<img alt="screenshot" width="30%" src="https://github.com/user-attachments/assets/c1e2c00a-0b59-424a-bb07-83018ec8d1e6"/>
-</p>
 
+- Добавление нового поста/события
 - Редактирование поста/события
 <p>
 <img alt="screenshot" width="30%" src="https://github.com/user-attachments/assets/edd7bbc5-3cb6-4498-bdde-2d7acae956f9"/>
