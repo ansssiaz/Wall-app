@@ -6,9 +6,9 @@ Cоциальная сеть для публикации постов и соб�
 
 </br>
 
-<img alt="screenshot" width="30%" src="https://github.com/user-attachments/assets/df330229-e3f2-4f4f-8f61-6ff004e11e49"/>
-<img alt="screenshot" width="30%" src="https://github.com/user-attachments/assets/74cb1fe0-8656-472c-b768-135243ff4771"/>
-<img alt="screenshot" width="30%" src="https://github.com/user-attachments/assets/0ea5fecc-a9fd-4602-9e30-95be9f1a6017"/>
+<img alt="screenshot" width="30%" src="https://github.com/user-attachments/assets/69abe19b-fd05-4bfd-88cb-5f14d2cca501"/>
+<img alt="screenshot" width="30%" src="https://github.com/user-attachments/assets/c4574280-5633-4b8d-ad8d-004df735400d"/>
+<img alt="screenshot" width="30%" src="https://github.com/user-attachments/assets/bfe47612-078f-4aae-baa4-b346f00be013"/>
 
 ## Функции приложения
 - Просмотр ленты постов/событий с пагинацией
