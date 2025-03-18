@@ -6,7 +6,7 @@
     app:startDestination="@id/bottomMenuFragment">
     <fragment
         android:id="@+id/bottomMenuFragment"
-        android:name="com.eltex.androidschool.fragment.BottomMenuFragment"
+        android:name="com.ansssiaz.wallapp.fragment.BottomMenuFragment"
         tools:layout="@layout/fragment_bottom_menu">
         <action
             android:id="@+id/action_bottomMenuFragment_to_newEventFragment"
@@ -19,11 +19,11 @@
 
     <fragment
         android:id="@+id/newEventFragment"
-        android:name="com.eltex.androidschool.feature.newevent.fragment.NewEventFragment"
+        android:name="com.ansssiaz.wallapp.feature.newevent.fragment.NewEventFragment"
         tools:layout="@layout/fragment_new_event" />
 
     <fragment
         android:id="@+id/newPostFragment"
-        android:name="com.eltex.androidschool.feature.newpost.fragment.NewPostFragment"
+        android:name="com.ansssiaz.wallapp.feature.newpost.fragment.NewPostFragment"
         tools:layout="@layout/fragment_new_post" />
 </navigation>

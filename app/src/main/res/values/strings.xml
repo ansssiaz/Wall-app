@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">Android School</string>
-    <string name="hello_eltex">Hello Eltex!</string>
+    <string name="app_name" translatable="false">WallApp</string>
     <string name="share_content_description">Share</string>
     <string name="participate_content_description">Join</string>
     <string name="like_content_description">Like</string>

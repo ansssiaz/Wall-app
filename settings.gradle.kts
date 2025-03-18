@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Android School"
+rootProject.name = "WallApp"
 include(":app")

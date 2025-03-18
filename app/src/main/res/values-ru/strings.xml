@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Android Школа</string>
-    <string name="hello_eltex">Привет Eltex!</string>
     <string name="share_content_description">Кнопка "Поделиться"</string>
     <string name="participate_content_description">Кнопка "Участвовать"</string>
     <string name="like_content_description">Кнопка "Нравится"</string>
